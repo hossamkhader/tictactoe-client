@@ -14,10 +14,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="23dp"
-        android:text="GFG Tic Tac Toe"
+        android:text="CSC510 Tic Tac Toe"
         android:textSize="45sp"
         android:textStyle="bold"
-        app:fontFamily="cursive"
+        app:fontFamily="sans-serif-light"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

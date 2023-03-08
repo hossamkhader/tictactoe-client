@@ -12,22 +12,44 @@ import android.widget.TextView;
 import java.net.URI;
 import java.util.Arrays;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private WebSocketClientImpl ws;
+    private final String game_id = "0000000000";
+
+    private String winner;
 
     void init_ws() {
         try {
             TextView serverAddress = findViewById(R.id.serverAddress);
             String url = String.format("ws://%s:8000", serverAddress.getText());
             this.ws = new WebSocketClientImpl(new URI(url));
+            this.ws.addHeader("game-id", "0000000000");
             this.ws.connectBlocking();
-            this.ws.addMessageHandler(message -> Log.d("message", message));
+            this.ws.addMessageHandler(this::updateClient);
         }
         catch (Exception e) {
             Log.d("init_ws", "Exception", e);
         }
+    }
+
+    void updateClient(String message) {
+        try {
+            JSONObject obj = (JSONObject) new JSONParser().parse(message);
+            JSONObject game = (JSONObject) obj.get(String.format("game-%s", game_id));
+            activePlayer = (String) game.get("activePlayer");
+            winner = (String) game.get("winner");
+        }
+        catch (Exception e) {
+            Log.d("updateClient", "Exception", e);
+
+        }
+
     }
 
     @Override
@@ -36,13 +58,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    boolean gameActive = true;
+    protected void onStop() {
+        super.onStop();
+        this.ws.close();
+    }
+
+        boolean gameActive = true;
 
     // Player representation
     // 0 - X
     // 1 - O
-    int activePlayer = 0;
-    int[] gameState = {2, 2, 2, 2, 2, 2, 2, 2, 2};
+    String activePlayer = "0";
+    String[] gameState = {"2", "2", "2", "2", "2", "2", "2", "2", "2"};
 
     // State meanings:
     //    0 - X
@@ -58,101 +85,58 @@ public class MainActivity extends AppCompatActivity {
     // players tap in an empty box of the grid
     @SuppressLint("SetTextI18n")
     public void playerTap(View view) {
+        if (winner != null) {
+            gameReset(view);
+        }
+
+        ImageView img = (ImageView) view;
+        int tappedImage = Integer.parseInt(img.getTag().toString());
+        TextView status = findViewById(R.id.status);
+
+        if (activePlayer.compareTo("0") == 0) {
+            img.setImageResource(R.drawable.x);
+            status.setText("O's Turn - Tap to play");
+        }
+        if (activePlayer.compareTo("1") == 0) {
+            img.setImageResource(R.drawable.o);
+            status.setText("X's Turn - Tap to play");
+        }
+
         try {
             if (this.ws==null || !this.ws.isOpen()) {
                 init_ws();
             }
-            this.ws.send("TEST");
+            JSONArray op_list = new JSONArray();
+            JSONObject op = new JSONObject();
+
+            op.put("op", "replace");
+            op.put("path", String.format("/game-%s/piece-%s", game_id, tappedImage));
+            op.put("value", activePlayer);
+            op_list.add(op);
+            this.ws.send(op_list.toString());
+            Thread.sleep(500);
+
+            if (winner != null) {
+                if (winner.compareTo("0") == 0) {
+                    status.setText("X has won");
+                }
+                if (winner.compareTo("1") == 0) {
+                    status.setText("O has won");
+                }
+            }
         }
         catch (Exception e) {
             Log.d("playerTap", "Exception", e);
         }
 
-        ImageView img = (ImageView) view;
-        int tappedImage = Integer.parseInt(img.getTag().toString());
-
-        // game reset function will be called
-        // if someone wins or the boxes are full
-        if (!gameActive) {
-            gameReset(view);
-        }
-
-        // if the tapped image is empty
-        if (gameState[tappedImage] == 2) {
-            // increase the counter
-            // after every tap
-            counter++;
-
-            // check if its the last box
-            if (counter == 9) {
-                // reset the game
-                gameActive = false;
-            }
-
-            // mark this position
-            gameState[tappedImage] = activePlayer;
-
-            // this will give a motion
-            // effect to the image
-            img.setTranslationY(-1000f);
-
-            // change the active player
-            // from 0 to 1 or 1 to 0
-            if (activePlayer == 0) {
-                // set the image of x
-                img.setImageResource(R.drawable.x);
-                activePlayer = 1;
-                TextView status = findViewById(R.id.status);
-
-                // change the status
-                status.setText("O's Turn - Tap to play");
-            } else {
-                // set the image of o
-                img.setImageResource(R.drawable.o);
-                activePlayer = 0;
-                TextView status = findViewById(R.id.status);
-
-                // change the status
-                status.setText("X's Turn - Tap to play");
-            }
-            img.animate().translationYBy(1000f).setDuration(300);
-        }
-        int flag = 0;
-        // Check if any player has won
-        for (int[] winPosition : winPositions) {
-            if (gameState[winPosition[0]] == gameState[winPosition[1]] &&
-                    gameState[winPosition[1]] == gameState[winPosition[2]] &&
-                    gameState[winPosition[0]] != 2) {
-                flag = 1;
-
-                // Somebody has won! - Find out who!
-                String winnerStr;
-
-                // game reset function be called
-                gameActive = false;
-                if (gameState[winPosition[0]] == 0) {
-                    winnerStr = "X has won";
-                } else {
-                    winnerStr = "O has won";
-                }
-                // Update the status bar for winner announcement
-                TextView status = findViewById(R.id.status);
-                status.setText(winnerStr);
-            }
-        }
-        // set the status if the match draw
-        if (counter == 9 && flag == 0) {
-            TextView status = findViewById(R.id.status);
-            status.setText("Match Draw");
-        }
     }
 
     // reset the game
     @SuppressLint("SetTextI18n")
     public void gameReset(View view) {
         gameActive = true;
-        activePlayer = 0;
-        Arrays.fill(gameState, 2);
+        activePlayer = "0";
+        Arrays.fill(gameState, "2");
         // remove all the images from the boxes inside the grid
         ((ImageView) findViewById(R.id.imageView0)).setImageResource(0);
         ((ImageView) findViewById(R.id.imageView1)).setImageResource(0);
