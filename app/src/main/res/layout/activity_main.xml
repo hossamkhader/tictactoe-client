@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/green"
+    android:background="@color/black"
+    android:visibility="visible"
     tools:context=".MainActivity">
 
     <!--title text-->
@@ -14,20 +14,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="23dp"
-        android:text="CSC510 Tic Tac Toe"
+        android:shadowColor="#FFFFFF"
+        android:shadowRadius="25"
+        android:text="@string/csc510_tic_tac_toe"
+        android:textColor="#FBC52A"
         android:textSize="45sp"
         android:textStyle="bold"
         app:fontFamily="sans-serif-light"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Tic-Tac-Toe" />
 
     <!--image of the grid-->
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:contentDescription="Start"
+        android:layout_width="305dp"
+        android:layout_height="305dp"
+        android:contentDescription="@string/start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
@@ -35,8 +39,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="420dp"
+        android:layout_width="307dp"
+        android:layout_height="304dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
@@ -55,15 +59,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:contentDescription="@string/top_left_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
-                android:tag="0" />
+                android:tag="0"
+                tools:ignore="NestedWeights" />
 
             <ImageView
                 android:id="@+id/imageView1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:contentDescription="@string/top_center_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
                 android:tag="1" />
@@ -73,6 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:contentDescription="@string/top_right_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
                 android:tag="2" />
@@ -89,15 +97,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:contentDescription="@string/center_left_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
-                android:tag="3" />
+                android:tag="3"
+                tools:ignore="NestedWeights" />
 
             <ImageView
                 android:id="@+id/imageView4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:contentDescription="@string/center_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
                 android:tag="4" />
@@ -107,6 +118,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:contentDescription="@string/center_right_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
                 android:tag="5" />
@@ -123,15 +135,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:contentDescription="@string/bottom_left_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
-                android:tag="6" />
+                android:tag="6"
+                tools:ignore="NestedWeights" />
 
             <ImageView
                 android:id="@+id/imageView7"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:contentDescription="@string/bottom_center_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
                 android:tag="7" />
@@ -141,6 +156,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:contentDescription="@string/bottom_right_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
                 android:tag="8" />
@@ -149,18 +165,21 @@
     </LinearLayout>
 
     <!--game status text display-->
+
     <TextView
         android:id="@+id/status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15sp"
-        android:text="Status"
+        android:text="@string/status"
+        android:textColor="#E8F5E9"
         android:textSize="28sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.413" />
 
     <EditText
         android:id="@+id/serverAddress"
@@ -169,11 +188,15 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
+        android:autofillHints=""
         android:ems="10"
-        android:hint="server address"
+        android:hint="@string/server_address"
         android:inputType="text"
+        android:minHeight="48dp"
+        android:textColorHint="#E8F5E9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        tools:ignore="ContentDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">TicTacToe</string>
+    <string name="csc510_tic_tac_toe">CSC510 Tic Tac Toe</string>
+    <string name="start">Start</string>
+    <string name="top_left_box">Top Left Box</string>
+    <string name="top_center_box">Top Center Box</string>
+    <string name="top_right_box">Top Right Box</string>
+    <string name="center_left_box">Center Left Box</string>
+    <string name="center_right_box">Center Right Box</string>
+    <string name="center_box">Center Box</string>
+    <string name="bottom_left_box">Bottom Left Box</string>
+    <string name="bottom_center_box">Bottom Center Box</string>
+    <string name="status">Status</string>
+    <string name="enter_the_server_ip_address">Enter the Server Ip Address</string>
+    <string name="server_address">server address</string>
+    <string name="bottom_right_box">Bottom Right Box</string>
 </resources>
