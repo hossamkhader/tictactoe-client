@@ -17,7 +17,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 
 
-public class MainActivity extends AppCompatActivity {
+public class TicTacToe extends AppCompatActivity {
 
     private WebSocketClientImpl ws;
     private final String game_id = "0000000000";
