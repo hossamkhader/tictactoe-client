@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+
+    tools:context=".TicTacToe"
+    tools:ignore="ExtraText">
+
+    <TextView
+        android:id="@+id/textview_signin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="50dp"
+        android:gravity="center"
+        android:text="@string/sign_in"
+        android:textColor="@color/purple_500"
+        android:textSize="35sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/textbox_user_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textview_signin"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:autofillHints=""
+        android:drawableStart="@drawable/ic_baseline_person_24"
+        android:drawablePadding="5dp"
+        android:hint="@string/username"
+        android:inputType="text"
+        android:padding="20dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        tools:ignore="VisualLintTextFieldSize" />
+
+    <EditText
+        android:id="@+id/textbox_game_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_login"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toRightOf="@+id/radiogroup"
+        android:hint="Game ID"
+        android:inputType="text"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        tools:ignore="VisualLintTextFieldSize" />
+
+    <EditText
+        android:id="@+id/textbox_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textbox_user_name"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:autofillHints=""
+        android:drawableStart="@drawable/ic_baseline_lock_24"
+        android:drawablePadding="5dp"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:padding="20dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        tools:ignore="VisualLintTextFieldSize" />
+
+
+    <Button
+        android:id="@+id/button_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_forget"
+        android:layout_alignEnd="@id/button_forget"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/white"
+        android:shape="rectangle"
+        android:background="@color/purple_500"
+        android:text="@string/login" />
+
+    <Button
+        android:id="@+id/button_forget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textbox_password"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/white"
+        android:text="@string/forget_password" />
+
+    <Spinner
+        android:id="@+id/scroll_GameSelection"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textbox_password"
+        android:layout_alignLeft="@id/textbox_password"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="100dp"
+        android:contentDescription="@string/select_game"
+        android:hint="@string/select_game"
+        android:minHeight="48dp"
+        android:padding="14dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/purple_200"
+        android:textStyle="bold"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/imageview_gamelogo"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/scroll_GameSelection"
+        android:layout_marginTop="180dp"
+        android:contentDescription="@string/todo" />
+    <RadioGroup
+        android:id="@+id/radiogroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scroll_GameSelection"
+        android:layout_alignLeft="@id/scroll_GameSelection"
+        android:gravity="left"
+        android:layout_marginTop="10dp">
+
+        <RadioButton
+            android:id="@+id/radio_new_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Game" />
+
+        <RadioButton
+            android:id="@+id/radio_join_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Join Game" />
+
+        <RadioButton
+            android:id="@+id/radio_spectator_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Spectate Game" />
+    </RadioGroup>
+</RelativeLayout>

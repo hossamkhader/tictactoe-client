@@ -14,4 +14,16 @@
     <string name="enter_the_server_ip_address">Enter the Server Ip Address</string>
     <string name="server_address">server address</string>
     <string name="bottom_right_box">Bottom Right Box</string>
+    <string name="sign_in">Sign.in</string>
+    <string name="username">Username</string>
+    <string name="todo">TODO</string>
+    <string name="password">Password</string>
+    <string name="login">LOGIN</string>
+    <string name="forget_password">Forget Password?</string>
+    <string name="select_game">Select Game</string>
+    <string name="need_an_account_sign_up">Need an Account? Sign up</string>
+    <string-array name="Games">
+        <item>"Tic Tac Toe"</item>
+        <item>"Future Games"</item>
+    </string-array>
 </resources>
