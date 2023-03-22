@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#273c4f">
+
+    <TextView
+        android:id="@+id/text_waiting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal"
+        android:text="Waiting for opponent..."
+        android:textColor="#FFFFFF"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_marginTop="300dp"
+        />
+
+    <Button
+        android:id="@+id/skip_waiting"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_waiting"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
+        android:backgroundTint="#f1c607"
+        android:fontFamily="sans-serif-medium"
+        android:text="Skip"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:textStyle="bold"
+
+        />
+
+</RelativeLayout>
