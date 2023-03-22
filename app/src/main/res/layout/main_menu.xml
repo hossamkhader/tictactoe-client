@@ -24,7 +24,7 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/textbox_user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textview_signin"
@@ -49,7 +49,7 @@
         android:layout_below="@+id/button_login"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_toRightOf="@+id/radioGroup"
+        android:layout_toRightOf="@+id/radiogroup"
         android:hint="Game ID"
         android:inputType="text"
         android:textColor="@color/white"
@@ -60,7 +60,7 @@
         android:id="@+id/textbox_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/username"
+        android:layout_below="@+id/textbox_user_name"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
@@ -80,8 +80,8 @@
         android:id="@+id/button_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/forget"
-        android:layout_alignEnd="@id/forget"
+        android:layout_below="@id/button_forget"
+        android:layout_alignEnd="@id/button_forget"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
@@ -93,7 +93,7 @@
         android:text="@string/login" />
 
     <Button
-        android:id="@+id/forget"
+        android:id="@+id/button_forget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/textbox_password"
@@ -106,7 +106,7 @@
         android:text="@string/forget_password" />
 
     <Spinner
-        android:id="@+id/GameSelection"
+        android:id="@+id/scroll_GameSelection"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
@@ -124,18 +124,18 @@
         tools:ignore="ContentDescription" />
 
     <ImageView
-        android:id="@+id/gamelogo"
+        android:id="@+id/imageview_gamelogo"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_below="@id/GameSelection"
+        android:layout_below="@id/scroll_GameSelection"
         android:layout_marginTop="180dp"
         android:contentDescription="@string/todo" />
     <RadioGroup
-        android:id="@+id/radioGroup"
+        android:id="@+id/radiogroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/GameSelection"
-        android:layout_alignLeft="@id/GameSelection"
+        android:layout_below="@id/scroll_GameSelection"
+        android:layout_alignLeft="@id/scroll_GameSelection"
         android:gravity="left"
         android:layout_marginTop="10dp">
 

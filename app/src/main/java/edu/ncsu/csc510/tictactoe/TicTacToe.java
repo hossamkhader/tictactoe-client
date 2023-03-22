@@ -60,6 +60,7 @@ public class TicTacToe extends AppCompatActivity {
 
     protected void onStop() {
         super.onStop();
+        if(this.ws!= null)
         this.ws.close();
     }
 

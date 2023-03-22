@@ -18,69 +18,85 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainMenu extends AppCompatActivity {
-    Spinner spinner;
-    ArrayAdapter adapter;
-    ImageView imageView;
+    Spinner game_selection_spinner_obj;
+    EditText gameid_textbox_obj, username_textbox_obj, password_textbox_obj;
+    RadioGroup radiogroup_obj;
+    ArrayAdapter arr_adapter;
+    ImageView image_view_obj;
     String gamename;
-    Button switchToSecondActivity;
-    String[] games = {"Tic Tac Toe", "Future Games", "..."};
-    AutoCompleteTextView autoCompleteTextView;
-
+    Button Login_btn_obj, forget_btn_obj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
-        imageView = (ImageView)findViewById(R.id.gamelogo);
-        spinner = (Spinner) findViewById(R.id.GameSelection);
-// Create an ArrayAdapter using the string array and a default spinner layout
-        adapter = ArrayAdapter.createFromResource(this,
+        bindView();
+        gameid_textbox_obj.setVisibility(View.INVISIBLE);
+        setListeners();
+    }
+
+    private void changeimage() {
+        gamename = game_selection_spinner_obj.getSelectedItem().toString();
+        if (gamename.equals("Tic Tac Toe")) {
+            image_view_obj.setImageResource(R.drawable.tictactoe);
+        } else if (gamename.equals("Future Games")) {
+            image_view_obj.setImageResource(R.drawable.future_game);
+        }
+    }
+
+    private void switchActivities() {
+        Intent switchActivityIntent = new Intent(this, TicTacToe.class);
+        startActivity(switchActivityIntent);
+    }
+
+    private void bindView() {
+        image_view_obj = (ImageView) findViewById(R.id.imageview_gamelogo);
+        game_selection_spinner_obj = (Spinner) findViewById(R.id.scroll_GameSelection);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        arr_adapter = ArrayAdapter.createFromResource(this,
                 R.array.Games, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        arr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-        final EditText gameid_textbox = (EditText) findViewById(R.id.textbox_game_id);
-        gameid_textbox.setVisibility(View.INVISIBLE);
-        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        game_selection_spinner_obj.setAdapter(arr_adapter);
+        radiogroup_obj = (RadioGroup) findViewById(R.id.radiogroup);
+        username_textbox_obj = (EditText) findViewById(R.id.textbox_user_name);
+        password_textbox_obj = (EditText) findViewById(R.id.textbox_password);
+        gameid_textbox_obj = (EditText) findViewById(R.id.textbox_game_id);
+        forget_btn_obj = (Button) findViewById(R.id.button_forget);
+        Login_btn_obj = (Button) findViewById(R.id.button_login);
+    }
+
+    private void setListeners() {
+        radiogroup_obj.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if(checkedId == R.id.radio_join_game || checkedId == R.id.radio_spectator_game){
-                    gameid_textbox.setVisibility(View.VISIBLE);
+                if (checkedId == R.id.radio_join_game || checkedId == R.id.radio_spectator_game) {
+                    gameid_textbox_obj.setVisibility(View.VISIBLE);
                 } else {
-                    gameid_textbox.setVisibility(View.INVISIBLE);
+                    gameid_textbox_obj.setVisibility(View.INVISIBLE);
                 }
             }
         });
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        game_selection_spinner_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                String selectedItem = spinner.getItemAtPosition(position).toString();
+                String selectedItem = game_selection_spinner_obj.getItemAtPosition(position).toString();
                 Toast.makeText(getApplicationContext(), selectedItem, Toast.LENGTH_LONG).show();
                 changeimage();
             }
+
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView){}
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
         });
-        switchToSecondActivity = findViewById(R.id.button_login);
-        switchToSecondActivity.setOnClickListener(new View.OnClickListener() {
+
+        Login_btn_obj.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 switchActivities();
             }
         });
-    }
-    private void changeimage() {
-        gamename = spinner.getSelectedItem().toString();
-        if (gamename.equals("Tic Tac Toe")){
-            imageView.setImageResource(R.drawable.tictactoe);
-        } else if (gamename.equals("Future Games")) {
-            imageView.setImageResource(R.drawable.future_game);
-        }
-    }
-    private void switchActivities() {
-        Intent switchActivityIntent = new Intent(this, TicTacToe.class);
-        startActivity(switchActivityIntent);
     }
 }
