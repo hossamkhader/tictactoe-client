@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:visibility="visible"
-    tools:context=".TicTacToe">
+    tools:context=".TicTacToeActivity">
 
     <!--title text-->
     <TextView
@@ -14,10 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="23dp"
-        android:shadowColor="#FFFFFF"
-        android:shadowRadius="25"
         android:text="@string/csc510_tic_tac_toe"
-        android:textColor="#FBC52A"
+        android:textColor="@color/white"
         android:textSize="45sp"
         android:textStyle="bold"
         app:fontFamily="sans-serif-light"
@@ -180,23 +178,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         app:layout_constraintVertical_bias="0.413" />
-
-    <EditText
-        android:id="@+id/serverAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="@string/server_address"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:textColorHint="#E8F5E9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        tools:ignore="ContentDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
