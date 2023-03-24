@@ -18,10 +18,11 @@
         <activity
             android:name=".WaitingActivity"
             android:exported="false"
-            android:parentActivityName=".MainMenu"/>
-        <activity android:name=".TicTacToe" />
+            android:parentActivityName=".MainMenuActivity"/>
+        <activity android:name=".TicTacToeActivity" />
+        <activity android:name=".JoinActivity" />
         <activity
-            android:name=".MainMenu"
+            android:name=".MainMenuActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

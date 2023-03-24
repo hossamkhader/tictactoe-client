@@ -17,7 +17,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 
 
-public class TicTacToe extends AppCompatActivity {
+public class TicTacToeActivity extends AppCompatActivity {
 
     private WebSocketClientImpl ws;
     private final String game_id = "0000000000";
@@ -26,7 +26,7 @@ public class TicTacToe extends AppCompatActivity {
 
     void init_ws() {
         try {
-            TextView serverAddress = findViewById(R.id.serverAddress);
+            TextView serverAddress = findViewById(R.id.server_address);
             String url = String.format("ws://%s:8000", serverAddress.getText());
             this.ws = new WebSocketClientImpl(new URI(url));
             this.ws.addHeader("game-id", "0000000000");
@@ -55,7 +55,7 @@ public class TicTacToe extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.tictactoe);
     }
 
     protected void onStop() {
