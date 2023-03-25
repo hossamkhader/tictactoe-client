@@ -7,32 +7,11 @@
         <deviceKey>
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\deoks.DESKTOP-5L7R1AJ\.android\avd\Pixel_4_API_33.avd" />
+            <value value="C:\Users\pateldarsh\.android\avd\Pixel_XL_API_UpsideDownCake.avd" />
           </Key>
         </deviceKey>
       </Target>
     </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-03-24T12:21:42.719745800Z" />
-    <multipleDevicesSelectedInDropDown value="true" />
-    <targetsSelectedWithDialog>
-      <Target>
-        <type value="QUICK_BOOT_TARGET" />
-        <deviceKey>
-          <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\deoks.DESKTOP-5L7R1AJ\.android\avd\Pixel_2_API_30.avd" />
-          </Key>
-        </deviceKey>
-      </Target>
-      <Target>
-        <type value="QUICK_BOOT_TARGET" />
-        <deviceKey>
-          <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\deoks.DESKTOP-5L7R1AJ\.android\avd\Pixel_4_API_33.avd" />
-          </Key>
-        </deviceKey>
-      </Target>
-    </targetsSelectedWithDialog>
+    <timeTargetWasSelectedWithDropDown value="2023-03-27T17:45:36.876682500Z" />
   </component>
 </project>

@@ -1,11 +1,40 @@
 package edu.ncsu.csc510.tictactoe;
 
+import android.util.Log;
+
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import java.net.URI;
 
+public class WebSocketClientSingleton {
+    static WebSocketClientImpl ws_instance = null;
 
-public class WebSocketClientImpl extends WebSocketClient {
+    // private constructor can't be accessed outside the class
+    public WebSocketClientSingleton() {
+    }
+
+    static public void clearInstance(){
+        ws_instance = null;
+    }
+    // Factory method to provide the users with instances
+    static public WebSocketClientImpl getInstance(URI uri)
+    {
+        if (ws_instance == null) {
+                ws_instance = new WebSocketClientImpl(uri);
+        }
+        return ws_instance;
+    }
+    static public WebSocketClientImpl getInstance()
+    {
+        NullPointerException nullPointer = new NullPointerException();
+        if (ws_instance != null)
+            return ws_instance;
+        else
+            throw nullPointer;
+    }
+}
+
+class WebSocketClientImpl extends WebSocketClient {
 
     private MessageHandler messageHandler;
 
