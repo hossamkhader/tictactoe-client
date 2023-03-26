@@ -33,6 +33,8 @@ public class MainMenu extends AppCompatActivity {
         bindView();
         gameid_textbox_obj.setVisibility(View.INVISIBLE);
         setListeners();
+
+
     }
 
     private void changeimage() {
