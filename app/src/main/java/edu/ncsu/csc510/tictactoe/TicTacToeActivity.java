@@ -40,7 +40,7 @@ import org.json.simple.parser.JSONParser;
 //           {0, 4, 8}, {2, 4, 6}};
 //public static int counter = 0;
 //boolean gameActive = true;
-public class TicTacToe extends AppCompatActivity {
+public class TicTacToeActivity extends AppCompatActivity {
     public static final int NEW_GAME = 0;
     public static final int JOIN = 1;
     public static final int PLAYING = 2;
@@ -87,7 +87,7 @@ public class TicTacToe extends AppCompatActivity {
     void init_ws() {
         this.gameState = new GameState();
         try {
-            TextView serverAddress = findViewById(R.id.serverAddress);
+            TextView serverAddress = findViewById(R.id.server_address);
 
             String url;
             if (serverAddress.getText().toString().isEmpty()) {
@@ -107,6 +107,27 @@ public class TicTacToe extends AppCompatActivity {
             Log.d("init_ws", "Exception", e);
         }
     }
+
+    void updateClient(String message) {
+        try {
+            JSONObject obj = (JSONObject) new JSONParser().parse(message);
+            JSONObject game = (JSONObject) obj.get(String.format("game-%s", game_id));
+            activePlayer = (String) game.get("activePlayer");
+            winner = (String) game.get("winner");
+        }
+        catch (Exception e) {
+            Log.d("updateClient", "Exception", e);
+
+        }
+
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.tictactoe);
+    }
+
     protected void onStop() {
         super.onStop();
         if (this.ws != null) {

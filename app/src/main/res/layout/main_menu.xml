@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-
-    tools:context=".TicTacToe"
+    tools:context=".TicTacToeActivity"
     tools:ignore="ExtraText">
 
     <TextView
@@ -43,20 +42,6 @@
         tools:ignore="VisualLintTextFieldSize" />
 
     <EditText
-        android:id="@+id/textbox_game_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button_login"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_toRightOf="@+id/radiogroup"
-        android:hint="Game ID"
-        android:inputType="text"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
-        tools:ignore="VisualLintTextFieldSize" />
-
-    <EditText
         android:id="@+id/textbox_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,7 +56,7 @@
         android:hint="@string/password"
         android:inputType="textPassword"
         android:padding="20dp"
-        android:textColor="@color/white"
+        android:textColor="@color/yellow"
         android:textColorHint="@color/white"
         tools:ignore="VisualLintTextFieldSize" />
 
@@ -87,9 +72,9 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="5dp"
+        android:backgroundTint="@color/purple_500"
         android:textColor="@color/white"
         android:shape="rectangle"
-        android:background="@color/purple_500"
         android:text="@string/login" />
 
     <Button
@@ -102,6 +87,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="5dp"
+        android:backgroundTint="@color/purple_500"
         android:textColor="@color/white"
         android:text="@string/forget_password" />
 
@@ -126,12 +112,13 @@
     <ImageView
         android:id="@+id/imageview_gamelogo"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@id/scroll_GameSelection"
-        android:layout_marginTop="180dp"
+        android:layout_height="300dp"
+        android:layout_below="@id/button_login"
+        android:layout_marginTop="10dp"
         android:contentDescription="@string/todo" />
-    <RadioGroup
-        android:id="@+id/radiogroup"
+
+    <EditText
+        android:id="@+id/server_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/scroll_GameSelection"

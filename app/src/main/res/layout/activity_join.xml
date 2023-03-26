@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="25dp"
+    android:visibility="visible"
+    android:background="@color/black"
+    tools:context=".JoinActivity">
+
+    <TextView
+        android:id="@+id/textview_lets_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/let_s_play_tic_tac_toe"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="25sp"
+        android:layout_gravity="center"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_marginTop="120dp"
+        />
+    <ImageView
+        android:id="@+id/imageview_gamelogo"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:contentDescription="@string/image_game" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center_horizontal"
+        >
+    <RadioGroup
+        android:id="@+id/radiogroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        tools:ignore="RtlHardcoded"
+        android:layout_gravity="left">
+
+        <RadioButton
+            android:id="@+id/radio_new_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/new_game" />
+
+        <RadioButton
+            android:id="@+id/radio_join_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/join_game" />
+
+        <RadioButton
+            android:id="@+id/radio_spectator_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/spectate_game" />
+    </RadioGroup>
+    <Button
+        android:layout_marginStart="50dp"
+        android:id="@+id/button_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/purple_500"
+        android:fontFamily="sans-serif-medium"
+        android:minHeight="48dp"
+        android:layout_gravity="center"
+        android:text="@string/submit"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/textbox_game_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="@string/game_id"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        tools:ignore="VisualLintTextFieldSize"
+        android:autofillHints="" />
+
+
+</LinearLayout>

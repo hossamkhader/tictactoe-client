@@ -22,6 +22,15 @@
     <string name="forget_password">Forget Password?</string>
     <string name="select_game">Select Game</string>
     <string name="need_an_account_sign_up">Need an Account? Sign up</string>
+    <string name="let_s_play_tic_tac_toe">Let\'s play Tic Tac Toe!</string>
+    <string name="game_id">Game ID</string>
+    <string name="spectate_game">Spectate Game</string>
+    <string name="new_game">New Game</string>
+    <string name="join_game">Join Game</string>
+    <string name="image_game">Image Game</string>
+    <string name="submit">Submit</string>
+    <string name="waiting_for_opponent">Waiting for opponent...</string>
+    <string name="skip">Skip</string>
     <string-array name="Games">
         <item>"Tic Tac Toe"</item>
         <item>"Future Games"</item>

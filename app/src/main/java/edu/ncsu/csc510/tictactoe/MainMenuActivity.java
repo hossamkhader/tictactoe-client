@@ -1,26 +1,25 @@
 package edu.ncsu.csc510.tictactoe;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainMenu extends AppCompatActivity {
+import java.io.ByteArrayOutputStream;
+
+public class MainMenuActivity extends AppCompatActivity {
     Spinner game_selection_spinner_obj;
-    EditText gameid_textbox_obj, username_textbox_obj, password_textbox_obj;
-    RadioGroup radiogroup_obj;
+    EditText username_textbox_obj, password_textbox_obj;
     ArrayAdapter arr_adapter;
     ImageView image_view_obj;
     String gamename;
@@ -31,7 +30,6 @@ public class MainMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
         bindView();
-        gameid_textbox_obj.setVisibility(View.INVISIBLE);
         setListeners();
 
 
@@ -47,39 +45,32 @@ public class MainMenu extends AppCompatActivity {
     }
 
     private void switchActivities() {
-        Intent switchActivityIntent = new Intent(this, TicTacToe.class);
+        Intent switchActivityIntent = new Intent(this, JoinActivity.class);
+        Bitmap bitmap = ((BitmapDrawable) image_view_obj.getDrawable()).getBitmap();
+        ByteArrayOutputStream game_img_byte_array = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, game_img_byte_array);
+        byte[] imageInByte = game_img_byte_array.toByteArray();
+        switchActivityIntent.putExtra("picture", imageInByte);
         startActivity(switchActivityIntent);
     }
 
     private void bindView() {
-        image_view_obj = (ImageView) findViewById(R.id.imageview_gamelogo);
-        game_selection_spinner_obj = (Spinner) findViewById(R.id.scroll_GameSelection);
+        image_view_obj = findViewById(R.id.imageview_gamelogo);
+        game_selection_spinner_obj = findViewById(R.id.scroll_GameSelection);
+        username_textbox_obj = findViewById(R.id.textbox_user_name);
+        password_textbox_obj = findViewById(R.id.textbox_password);
+        forget_btn_obj = findViewById(R.id.button_forget);
+        Login_btn_obj = findViewById(R.id.button_login);
+
         // Create an ArrayAdapter using the string array and a default spinner layout
         arr_adapter = ArrayAdapter.createFromResource(this,
                 R.array.Games, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
+        // Specify the layout to use when the list of choices appears
         arr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
         game_selection_spinner_obj.setAdapter(arr_adapter);
-        radiogroup_obj = (RadioGroup) findViewById(R.id.radiogroup);
-        username_textbox_obj = (EditText) findViewById(R.id.textbox_user_name);
-        password_textbox_obj = (EditText) findViewById(R.id.textbox_password);
-        gameid_textbox_obj = (EditText) findViewById(R.id.textbox_game_id);
-        forget_btn_obj = (Button) findViewById(R.id.button_forget);
-        Login_btn_obj = (Button) findViewById(R.id.button_login);
     }
 
     private void setListeners() {
-        radiogroup_obj.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.radio_join_game || checkedId == R.id.radio_spectator_game) {
-                    gameid_textbox_obj.setVisibility(View.VISIBLE);
-                } else {
-                    gameid_textbox_obj.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
 
         game_selection_spinner_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
