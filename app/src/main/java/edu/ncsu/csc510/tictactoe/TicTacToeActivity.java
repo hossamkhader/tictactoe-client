@@ -60,7 +60,7 @@ public class TicTacToeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.tictactoe);
         uiThread = Thread.currentThread();
         layout = findViewById(R.id.linearLayout);
         status = findViewById(R.id.status);
@@ -87,15 +87,15 @@ public class TicTacToeActivity extends AppCompatActivity {
     void init_ws() {
         this.gameState = new GameState();
         try {
-            TextView serverAddress = findViewById(R.id.server_address);
+            /*TextView serverAddress = findViewById(R.id.serverAddress);
 
-            String url;
             if (serverAddress.getText().toString().isEmpty()) {
                 url = "ws://10.0.2.2:8000";
             } else {
                 url = String.format("ws://%s:8000", serverAddress.getText());
-            }
-
+            }*/
+            String url;
+            url = "ws://10.0.2.2:8000";
             this.ws = new WebSocketClientImpl(new URI(url));
             UUID uuid = UUID.randomUUID();
             //this.gameState.setGame_id(uuid.toString());
@@ -107,27 +107,6 @@ public class TicTacToeActivity extends AppCompatActivity {
             Log.d("init_ws", "Exception", e);
         }
     }
-
-    void updateClient(String message) {
-        try {
-            JSONObject obj = (JSONObject) new JSONParser().parse(message);
-            JSONObject game = (JSONObject) obj.get(String.format("game-%s", game_id));
-            activePlayer = (String) game.get("activePlayer");
-            winner = (String) game.get("winner");
-        }
-        catch (Exception e) {
-            Log.d("updateClient", "Exception", e);
-
-        }
-
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.tictactoe);
-    }
-
     protected void onStop() {
         super.onStop();
         if (this.ws != null) {

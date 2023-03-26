@@ -16,13 +16,11 @@
         android:theme="@style/Theme.TicTacToe"
         tools:targetApi="31">
         <activity
-            android:name=".SbuscriberActivity"
-            android:exported="false" />
-        <activity
             android:name=".WaitingActivity"
             android:exported="false"
-            android:parentActivityName=".MainMenu" />
-        <activity android:name=".TicTacToe" />
+            android:parentActivityName=".MainMenuActivity" />
+        <activity android:name=".TicTacToeActivity" />
+        <activity android:name=".JoinActivity" />
         <activity
             android:name=".MainMenuActivity"
             android:exported="true">
