@@ -72,8 +72,8 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="5dp"
-        android:backgroundTint="@color/purple_500"
-        android:textColor="@color/white"
+        android:backgroundTint="@drawable/button_background_color"
+        android:textColor="@drawable/button_text_color"
         android:shape="rectangle"
         android:text="@string/login" />
 
@@ -123,6 +123,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/scroll_GameSelection"
         android:layout_alignLeft="@id/scroll_GameSelection"
+        android:layout_marginTop="5dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="Server Address" />
         android:gravity="left"
         android:layout_marginTop="10dp"/>
 

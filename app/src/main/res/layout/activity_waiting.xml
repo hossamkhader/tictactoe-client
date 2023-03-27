@@ -27,8 +27,8 @@
         android:layout_marginTop="50dp"
         android:fontFamily="sans-serif-medium"
         android:text="@string/skip"
-        android:backgroundTint="@color/purple_500"
-        android:textColor="@color/white"
+        android:backgroundTint="@drawable/button_background_color"
+        android:textColor="@drawable/button_text_color"
         android:textSize="15sp"
         android:textStyle="bold"
 

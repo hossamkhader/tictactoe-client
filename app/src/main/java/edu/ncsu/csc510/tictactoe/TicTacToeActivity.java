@@ -56,6 +56,19 @@ public class TicTacToeActivity extends AppCompatActivity {
     private String gameId;
     private final String game_id = "0000000000";
 
+    private String winner;
+
+    boolean init_ws() {
+        try {
+            this.ws = WebSocketClientSingleton.getInstance();
+            this.ws.addMessageHandler(this::updateClient);
+        }
+        catch (Exception e) {
+            Log.d("init_ws", "Exception", e);
+        }
+        return false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,29 +97,6 @@ public class TicTacToeActivity extends AppCompatActivity {
         init_ws();
     }
 
-    void init_ws() {
-        this.gameState = new GameState();
-        try {
-            /*TextView serverAddress = findViewById(R.id.serverAddress);
-
-            if (serverAddress.getText().toString().isEmpty()) {
-                url = "ws://10.0.2.2:8000";
-            } else {
-                url = String.format("ws://%s:8000", serverAddress.getText());
-            }*/
-            String url;
-            url = "ws://10.0.2.2:8000";
-            this.ws = new WebSocketClientImpl(new URI(url));
-            UUID uuid = UUID.randomUUID();
-            //this.gameState.setGame_id(uuid.toString());
-
-            this.ws.addHeader("game-id", uuid.toString());
-            this.ws.connectBlocking();
-            this.ws.addMessageHandler(this::updateClient);
-        } catch (Exception e) {
-            Log.d("init_ws", "Exception", e);
-        }
-    }
     protected void onStop() {
         super.onStop();
         if (this.ws != null) {
@@ -135,7 +125,7 @@ public class TicTacToeActivity extends AppCompatActivity {
                 JSONObject op = gameStateToJson();
                 JSONArray data = new JSONArray();
                 data.add(op);
-                this.ws.send(op.toString());
+                this.ws.send(data.toString());
             }
         } catch (Exception e) {
             Log.d("playerTap", "Exception", e);
