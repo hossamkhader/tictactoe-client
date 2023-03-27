@@ -60,7 +60,7 @@
                 android:contentDescription="@string/top_left_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
-                android:tag="0"
+                android:tag="2"
                 tools:ignore="NestedWeights" />
 
             <ImageView
@@ -71,7 +71,7 @@
                 android:contentDescription="@string/top_center_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
-                android:tag="1" />
+                android:tag="2" />
 
             <ImageView
                 android:id="@+id/imageView2"
@@ -98,7 +98,7 @@
                 android:contentDescription="@string/center_left_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
-                android:tag="3"
+                android:tag="2"
                 tools:ignore="NestedWeights" />
 
             <ImageView
@@ -109,7 +109,7 @@
                 android:contentDescription="@string/center_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
-                android:tag="4" />
+                android:tag="2" />
 
             <ImageView
                 android:id="@+id/imageView5"
@@ -119,7 +119,7 @@
                 android:contentDescription="@string/center_right_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
-                android:tag="5" />
+                android:tag="2" />
         </LinearLayout>
 
         <LinearLayout
@@ -136,7 +136,7 @@
                 android:contentDescription="@string/bottom_left_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
-                android:tag="6"
+                android:tag="2"
                 tools:ignore="NestedWeights" />
 
             <ImageView
@@ -147,7 +147,7 @@
                 android:contentDescription="@string/bottom_center_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
-                android:tag="7" />
+                android:tag="2" />
 
             <ImageView
                 android:id="@+id/imageView8"
@@ -157,7 +157,7 @@
                 android:contentDescription="@string/bottom_right_box"
                 android:onClick="playerTap"
                 android:padding="20sp"
-                android:tag="8" />
+                android:tag="2" />
         </LinearLayout>
 
     </LinearLayout>

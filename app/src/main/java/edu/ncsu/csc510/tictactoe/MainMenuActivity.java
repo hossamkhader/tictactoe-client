@@ -31,6 +31,8 @@ public class MainMenuActivity extends AppCompatActivity {
         setContentView(R.layout.main_menu);
         bindView();
         setListeners();
+
+
     }
 
     private void changeimage() {

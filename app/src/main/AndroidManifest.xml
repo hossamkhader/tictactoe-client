@@ -18,7 +18,7 @@
         <activity
             android:name=".WaitingActivity"
             android:exported="false"
-            android:parentActivityName=".MainMenuActivity"/>
+            android:parentActivityName=".MainMenuActivity" />
         <activity android:name=".TicTacToeActivity" />
         <activity android:name=".JoinActivity" />
         <activity
