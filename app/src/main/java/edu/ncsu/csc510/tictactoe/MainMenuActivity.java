@@ -3,7 +3,6 @@ package edu.ncsu.csc510.tictactoe;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -37,7 +35,7 @@ public class MainMenuActivity extends AppCompatActivity {
     ImageView image_view_obj;
     String gamename;
     Button Login_btn_obj, forget_btn_obj;
-    EditText serverAddress ;
+    EditText server_address_textbox_obj;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +104,7 @@ public class MainMenuActivity extends AppCompatActivity {
         password_textbox_obj = findViewById(R.id.textbox_password);
         forget_btn_obj = findViewById(R.id.button_forget);
         Login_btn_obj = findViewById(R.id.button_login);
-        serverAddress = findViewById(R.id.server_address);
+        server_address_textbox_obj = findViewById(R.id.server_address);
         // Create an ArrayAdapter using the string array and a default spinner layout
         arr_adapter = ArrayAdapter.createFromResource(this,
                 R.array.Games, android.R.layout.simple_spinner_item);
@@ -125,7 +123,7 @@ public class MainMenuActivity extends AppCompatActivity {
         try {
             boolean succeed = false;
 
-            String url = String.format("ws://%s:8000", serverAddress.getText());
+            String url = String.format("ws://%s:8000", server_address_textbox_obj.getText());
             this.ws = WebSocketClientSingleton.getInstance(URI.create(url));
             succeed = this.ws.connectBlocking(2L,  TimeUnit.SECONDS);
             if(succeed)
@@ -140,7 +138,7 @@ public class MainMenuActivity extends AppCompatActivity {
         return false;
     }
     private void setListeners() {
-
+        //create spinner object listener so user can select game properly
         game_selection_spinner_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
@@ -153,6 +151,7 @@ public class MainMenuActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+        // Login button should disabled by default
         Login_btn_obj.setEnabled(false);
         Login_btn_obj.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,31 +159,38 @@ public class MainMenuActivity extends AppCompatActivity {
                 switchActivities();
             }
         });
-        username_textbox_obj.addTextChangedListener(new TextWatcher() {
-
+        //create generic text box watch which can be applied later on each text box field
+        TextWatcher mTextboxWatcher = new TextWatcher() {
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if(s.toString().trim().length()==0){
-                    Login_btn_obj.getBackground();
-                    Login_btn_obj.setEnabled(false);
-                } else {
-                    Login_btn_obj.setEnabled(true);
-                }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-                // TODO Auto-generated method stub
-
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
-
+            public void afterTextChanged(Editable editable) {
+                // check Fields For Empty Values
+                checkFieldsForEmptyValues();
             }
-        });
+        };
+        //apply the listener to the each text field so it disables the login button properly
+        server_address_textbox_obj.addTextChangedListener(mTextboxWatcher);
+        username_textbox_obj.addTextChangedListener(mTextboxWatcher);
+
+    }
+    //This function checks if username and server address field is filled before login button is
+    // enabled
+    void checkFieldsForEmptyValues() {
+
+        String s1 = username_textbox_obj.getText().toString();
+        String s2 = server_address_textbox_obj.getText().toString();
+
+        if (s1.equals("") || s2.equals("")) {
+            Login_btn_obj.setEnabled(false);
+        } else {
+            Login_btn_obj.setEnabled(true);
+        }
     }
 }
