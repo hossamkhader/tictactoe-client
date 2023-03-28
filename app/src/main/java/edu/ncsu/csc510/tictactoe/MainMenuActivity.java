@@ -27,6 +27,7 @@ import org.json.simple.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 public class MainMenuActivity extends AppCompatActivity {
     private WebSocketClientImpl ws;
@@ -123,10 +124,10 @@ public class MainMenuActivity extends AppCompatActivity {
     boolean init_ws() {
         try {
             boolean succeed = false;
+
             String url = String.format("ws://%s:8000", serverAddress.getText());
-            this.ws = WebSocketClientSingleton.getInstance(new URI(url));
-            this.ws.addHeader("game-id", "0000000000");
-            succeed = this.ws.connectBlocking();
+            this.ws = WebSocketClientSingleton.getInstance(URI.create(url));
+            succeed = this.ws.connectBlocking(2L,  TimeUnit.SECONDS);
             if(succeed)
                 return true;
             else
