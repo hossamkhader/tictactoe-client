@@ -69,6 +69,10 @@ class WebSocketClientImpl extends WebSocketClient {
         this.messageHandler = msgHandler;
     }
 
+    public void removeMessageHandler() {
+        this.messageHandler = null;
+    }
+
     public interface MessageHandler {
 
         public void handleMessage(String message);

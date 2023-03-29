@@ -61,6 +61,7 @@ public class TicTacToeActivity extends AppCompatActivity {
     boolean init_ws() {
         try {
             this.ws = WebSocketClientSingleton.getInstance();
+            this.ws.removeMessageHandler();
             this.ws.addMessageHandler(this::updateClient);
         }
         catch (Exception e) {

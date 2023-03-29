@@ -64,12 +64,14 @@ public class MainMenuActivity extends AppCompatActivity {
             startActivity(switchActivityIntent);
             JSONObject action = new JSONObject();
             try {
-                action.put("set_player_name", username_textbox_obj.getText().toString());
+                action.put("action", "set_player_name");
+                action.put("username", username_textbox_obj.getText().toString());
             } catch (Exception e) {
                 Log.d("JSONToObject", "Exception", e);
             }
             JSONArray data = new JSONArray();
             data.add(action);
+//            switchActivityIntent.putExtra("ws_message", data.toString());
             this.ws.send(data.toString());
         }
         else{
@@ -126,10 +128,13 @@ public class MainMenuActivity extends AppCompatActivity {
             String url = String.format("ws://%s:8000", server_address_textbox_obj.getText());
             this.ws = WebSocketClientSingleton.getInstance(URI.create(url));
             succeed = this.ws.connectBlocking(2L,  TimeUnit.SECONDS);
-            if(succeed)
+            if(succeed) {
+                this.ws.addMessageHandler(this::messageHandler);
                 return true;
-            else
+            }
+            else {
                 throw new WSException("Socket Fail");
+            }
         }
         catch (Exception e) {
             Log.d("init_ws", "Exception", e);
@@ -192,5 +197,12 @@ public class MainMenuActivity extends AppCompatActivity {
         } else {
             Login_btn_obj.setEnabled(true);
         }
+    }
+
+    // This is passed to the websocket to use as the messageHandler for this page
+    void messageHandler(String message) {
+        // print message to log for testing purposes
+        Log.d("mainMSG", message);
+
     }
 }
