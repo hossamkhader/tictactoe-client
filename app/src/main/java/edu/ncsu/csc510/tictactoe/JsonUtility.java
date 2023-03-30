@@ -8,11 +8,13 @@ import org.json.simple.parser.JSONParser;
 import java.util.Date;
 
 public class JsonUtility {
-    public static void jsonToGameState(String message) {
+    public static GameState jsonToGameState(String message) {
+        GameState gameState = new GameState();
+        String[] board = new String[9];
         try {
-            GameState gameState = WebSocketClientSingleton.getGameState();
+            gameState = WebSocketClientSingleton.getGameState();
             JSONObject obj = (JSONObject) new JSONParser().parse(message);
-            String[] board = new String[9];
+
             if (obj != null) {
                 if (obj.get("game_id") != null)
                     gameState.setGame_id(obj.get("game_id").toString());
@@ -36,11 +38,12 @@ public class JsonUtility {
                 }
             }
             gameState.board = board;
-            WebSocketClientSingleton.setGameState(gameState);
+
 
         } catch (Exception e) {
             Log.d("updateClient", "Exception", e);
         }
+        return gameState;
     }
 
 }

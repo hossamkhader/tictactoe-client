@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.simple.JSONObject;
@@ -59,10 +60,29 @@ public class TicTacToeActivity extends AppCompatActivity {
     private String winner;
 
     boolean init_ws() {
+        boolean succeed = false;
         try {
             this.ws = WebSocketClientSingleton.getInstance();
             this.ws.removeMessageHandler();
             this.ws.addMessageHandler(this::updateClient);
+
+
+            //I have to add this code below because the other device from waiting stage lost the connection to the server.
+            //maybe I am wrong. the android mobile game is new for me and had learned java long long time ago.
+            //
+            JSONArray data = new JSONArray();
+            GameState gameState = WebSocketClientSingleton.getGameState();
+            JSONObject op = new JSONObject();
+            op.put("op", "replace");
+            op.put("path", String.format("/%s/piece-%s", gameState.getGame_id(), Integer.toString(0)));
+            op.put("value", gameState.getActivePlayer());
+            op.put("last_move", new Date().getTime());
+            data.add(op);
+            this.ws.send(data.toString());
+
+
+
+            return true;
         }
         catch (Exception e) {
             Log.d("init_ws", "Exception", e);
@@ -73,7 +93,7 @@ public class TicTacToeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        init_ws();
         setContentView(R.layout.tictactoe);
         uiThread = Thread.currentThread();
         layout = findViewById(R.id.linearLayout);
@@ -94,7 +114,7 @@ public class TicTacToeActivity extends AppCompatActivity {
                 }
             }
         }
-        init_ws();
+
     }
 
     protected void onStop() {
@@ -114,18 +134,13 @@ public class TicTacToeActivity extends AppCompatActivity {
         int boardNum = Integer.parseInt(tappedImageId.substring(tappedImageId.length() - 1));
 
         try {
-
-            if (gameState.getWinner() != null) {
-                gameReset(view);
-            } else {
-                gameState.board[boardNum] = gameState.getActivePlayer();
-                updateGameBoard();
-                JSONObject op = gameStateToJson(boardNum);
-                JSONArray data = new JSONArray();
-                data.add(op);
-                this.ws.send(data.toString());
-            }
-            WebSocketClientSingleton.setGameState(gameState);
+            //gameState.board[boardNum] = gameState.getActivePlayer();
+            //updateGameBoard();
+            JSONObject op = gameStateToJson(boardNum);
+            JSONArray data = new JSONArray();
+            data.add(op);
+            this.ws.send(data.toString());
+            //WebSocketClientSingleton.setGameState(gameState);
         } catch (Exception e) {
             Log.d("playerTap", "Exception", e);
         }
@@ -135,7 +150,8 @@ public class TicTacToeActivity extends AppCompatActivity {
     void updateClient(String message) {
         Log.d("Message from server In updateClient: ", message);
         try {
-            JsonUtility.jsonToGameState(message);
+            GameState gameState = JsonUtility.jsonToGameState(message);
+            WebSocketClientSingleton.setGameState(gameState);
             updateGameBoard();
 
         } catch (Exception e) {
@@ -151,7 +167,8 @@ public class TicTacToeActivity extends AppCompatActivity {
                 for (int i = 0; i < imageList.size(); i++) {
                     ImageView img = imageList.get(i);
                     //String marked = img.getTag().toString().isEmpty()? null : img.getTag().toString();
-                    if (!gameState.board[i].equals(img.getTag().toString())) {
+                    if(gameState.board[i] != null)
+                    {
                         if (gameState.board[i].equals("0")) {
                             img.setImageResource(R.drawable.x);
                             img.setTag("0");
@@ -198,7 +215,6 @@ public class TicTacToeActivity extends AppCompatActivity {
     public JSONObject gameStateToJson(int piece) {
         GameState gameState = WebSocketClientSingleton.getGameState();
         JSONObject op = new JSONObject();
-        String[] board = new String[9];
         try {
             op.put("op", "replace");
             op.put("path", String.format("/%s/piece-%s", gameState.getGame_id(), Integer.toString(piece)));

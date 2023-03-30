@@ -3,6 +3,7 @@ package edu.ncsu.csc510.tictactoe;
 public class User {
     private String player_id;
     private String username;
+    private String mode;
 
     public User(){}
     public User(String player_id, String username) {
@@ -22,5 +23,13 @@ public class User {
     }
     public void setUsername(String username){
         this.username = username;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 }

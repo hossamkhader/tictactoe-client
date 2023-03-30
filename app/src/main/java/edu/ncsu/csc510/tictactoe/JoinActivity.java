@@ -94,16 +94,19 @@ public class JoinActivity extends AppCompatActivity {
             {
                 request.put("action", "create_game");
                 request.put("player_id", user.getPlayer_id());
+                user.setMode("create");
 
             } else if (selected.equals("Join Game") && !gameId.isEmpty()) {
 
                 request.put("action", "join_game");
                 request.put("player_id", user.getPlayer_id());
                 request.put("game_id", gameId);
+                user.setMode("join");
             } else if (selected == "Spectate Game") {
                 //Do not exist yet.
 
             }
+            WebSocketClientSingleton.setUser(user);
             JSONArray data = new JSONArray();
             data.add(request);
             this.ws.send(data.toString());
@@ -117,15 +120,27 @@ public class JoinActivity extends AppCompatActivity {
     void messageHandler(String message) {
         // print message to log for testing purposes
         Log.d("joinMSG", message);
+        User user = WebSocketClientSingleton.getUser();
         try{
-            JsonUtility.jsonToGameState(message);
+            GameState gameState = JsonUtility.jsonToGameState(message);
+            WebSocketClientSingleton.setGameState(gameState);
+            if(user.getMode().equals("create"))
+            {
+                Intent switchActivityIntent = new Intent(this, WaitingActivity.class);
+                startActivity(switchActivityIntent);
+            } else if (user.getMode().equals("join")) {
+                Intent switchActivityIntent = new Intent(this, TicTacToeActivity.class);
+                startActivity(switchActivityIntent);
+            }else
+            {
+                //not exist yet
+            }
         }catch(Exception e)
         {
-
+            Log.d("Join Message Handler",  "Exception: ", e);
         }
 
-        Intent switchActivityIntent = new Intent(this, WaitingActivity.class);
-        startActivity(switchActivityIntent);
+
     }
 
     // This method was just used to repeat the set username action on this page
