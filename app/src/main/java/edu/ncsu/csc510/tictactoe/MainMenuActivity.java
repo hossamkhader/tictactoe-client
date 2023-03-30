@@ -61,6 +61,7 @@ public class MainMenuActivity extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, game_img_byte_array);
             byte[] imageInByte = game_img_byte_array.toByteArray();
             switchActivityIntent.putExtra("picture", imageInByte);
+            switchActivityIntent.putExtra("player_name", username_textbox_obj.getText().toString());
             startActivity(switchActivityIntent);
             JSONObject action = new JSONObject();
             try {
@@ -73,6 +74,7 @@ public class MainMenuActivity extends AppCompatActivity {
             data.add(action);
 //            switchActivityIntent.putExtra("ws_message", data.toString());
             this.ws.send(data.toString());
+            this.ws.removeMessageHandler();
         }
         else{
             // Create the object of AlertDialog Builder class

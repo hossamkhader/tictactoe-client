@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,14 +18,13 @@ import android.widget.RadioGroup;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-
 public class JoinActivity extends AppCompatActivity {
     ImageView image_view_obj;
     RadioGroup radiogroup_obj;
     EditText gameid_textbox_obj;
     Button submit_btn_obj;
 
+    String username;
     private WebSocketClientImpl ws;
 
     @Override
@@ -37,6 +35,7 @@ public class JoinActivity extends AppCompatActivity {
         setListener();
         Bundle extras = getIntent().getExtras();
         byte[] byteArray = extras.getByteArray("picture");
+        username = extras.getString("player_name");
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         image_view_obj.setImageBitmap(bmp);
         init_ws();
@@ -45,11 +44,9 @@ public class JoinActivity extends AppCompatActivity {
     boolean init_ws() {
         try {
             this.ws = WebSocketClientSingleton.getInstance();
-            this.ws.removeMessageHandler();
             this.ws.addMessageHandler(this::messageHandler);
 //            testMessageHandler();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.d("join_activity_init_ws", "Exception", e);
         }
         return false;
@@ -63,25 +60,68 @@ public class JoinActivity extends AppCompatActivity {
         //hide the gameid initially
         gameid_textbox_obj.setVisibility(View.INVISIBLE);
     }
-    private void setListener(){
+
+    private void setListener() {
         radiogroup_obj.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.radio_join_game || checkedId == R.id.radio_spectator_game) {
-                    gameid_textbox_obj.setVisibility(View.VISIBLE);
-                } else {
-                    gameid_textbox_obj.setVisibility(View.INVISIBLE);
-                }
+                checkFields();
             }
         });
+        //Disable the button by default
+        submit_btn_obj.setEnabled(true);
         submit_btn_obj.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 switchActivities();
             }
         });
+        TextWatcher mTextboxWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // check Fields For Values
+                checkFields();
+            }
+        };
+        gameid_textbox_obj.addTextChangedListener(mTextboxWatcher);
     }
+
+    void checkFields() {
+        int radio_button_selected = radiogroup_obj.getCheckedRadioButtonId();
+        if (radio_button_selected == R.id.radio_new_game) {
+            gameid_textbox_obj.setVisibility(View.INVISIBLE);
+            submit_btn_obj.setEnabled(true);
+            return;
+        } else {
+            gameid_textbox_obj.setVisibility(View.VISIBLE);
+            String s1 = gameid_textbox_obj.getText().toString();
+            if (s1.equals("")) {
+                submit_btn_obj.setEnabled(false);
+            } else {
+                submit_btn_obj.setEnabled(true);
+            }
+        }
+    }
+
     private void switchActivities() {
+        JSONObject action = new JSONObject();
+        try {
+            action.put("action","create_game");
+            action.put("player_id", username);
+        } catch (Exception e) {
+            Log.d("JSONToObject", "Exception", e);
+        }
+        JSONArray data = new JSONArray();
+        data.add(action);
+        this.ws.send(data.toString());
         Intent switchActivityIntent = new Intent(this, WaitingActivity.class);
         startActivity(switchActivityIntent);
     }
