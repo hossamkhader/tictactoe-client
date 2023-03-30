@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import org.json.simple.JSONArray;
@@ -77,19 +78,54 @@ public class JoinActivity extends AppCompatActivity {
         submit_btn_obj.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switchActivities();
+                String selectedValue = ((RadioButton)findViewById(radiogroup_obj.getCheckedRadioButtonId())).getText().toString();
+                String gameId = gameid_textbox_obj.getText().toString();
+                switchActivities(selectedValue, gameId);
             }
         });
     }
-    private void switchActivities() {
-        Intent switchActivityIntent = new Intent(this, WaitingActivity.class);
-        startActivity(switchActivityIntent);
+    private void switchActivities(String selected, String gameId) {
+        User user = WebSocketClientSingleton.getUser();
+        JSONObject request = new JSONObject();
+        if(selected.isEmpty()){
+            //Alert message
+        }else{
+            if(selected.equals("New Game"))
+            {
+                request.put("action", "create_game");
+                request.put("player_id", user.getPlayer_id());
+
+            } else if (selected.equals("Join Game") && !gameId.isEmpty()) {
+
+                request.put("action", "join_game");
+                request.put("player_id", user.getPlayer_id());
+                request.put("game_id", gameId);
+            } else if (selected == "Spectate Game") {
+                //Do not exist yet.
+
+            }
+            JSONArray data = new JSONArray();
+            data.add(request);
+            this.ws.send(data.toString());
+
+
+        }
+
     }
 
     // This is passed to the websocket to use as the messageHandler for this page
     void messageHandler(String message) {
         // print message to log for testing purposes
         Log.d("joinMSG", message);
+        try{
+            JsonUtility.jsonToGameState(message);
+        }catch(Exception e)
+        {
+
+        }
+
+        Intent switchActivityIntent = new Intent(this, WaitingActivity.class);
+        startActivity(switchActivityIntent);
     }
 
     // This method was just used to repeat the set username action on this page

@@ -22,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
@@ -36,6 +38,7 @@ public class MainMenuActivity extends AppCompatActivity {
     String gamename;
     Button Login_btn_obj, forget_btn_obj;
     EditText server_address_textbox_obj;
+    byte[] imageInByte = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,13 +58,12 @@ public class MainMenuActivity extends AppCompatActivity {
 
     private void switchActivities() {
         if(init_ws()){
-            Intent switchActivityIntent = new Intent(this, JoinActivity.class);
+
             Bitmap bitmap = ((BitmapDrawable) image_view_obj.getDrawable()).getBitmap();
             ByteArrayOutputStream game_img_byte_array = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, game_img_byte_array);
-            byte[] imageInByte = game_img_byte_array.toByteArray();
-            switchActivityIntent.putExtra("picture", imageInByte);
-            startActivity(switchActivityIntent);
+            imageInByte = game_img_byte_array.toByteArray();
+
             JSONObject action = new JSONObject();
             try {
                 action.put("action", "set_player_name");
@@ -129,6 +131,7 @@ public class MainMenuActivity extends AppCompatActivity {
             this.ws = WebSocketClientSingleton.getInstance(URI.create(url));
             succeed = this.ws.connectBlocking(2L,  TimeUnit.SECONDS);
             if(succeed) {
+                this.ws.removeMessageHandler();
                 this.ws.addMessageHandler(this::messageHandler);
                 return true;
             }
@@ -161,6 +164,7 @@ public class MainMenuActivity extends AppCompatActivity {
         Login_btn_obj.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 switchActivities();
             }
         });
@@ -203,6 +207,26 @@ public class MainMenuActivity extends AppCompatActivity {
     void messageHandler(String message) {
         // print message to log for testing purposes
         Log.d("mainMSG", message);
+        String action, description;
+        action = description  = "";
+        User user = WebSocketClientSingleton.getUser();
+        try {
+            JSONObject obj = (JSONObject) new JSONParser().parse(message);
+            action = obj.get("action").toString();
+            description = obj.get("description").toString();
+            user.setUsername(obj.get("username").toString());
+            user.setPlayer_id(obj.get("player_id").toString());
+        } catch (ParseException e) {
+            Log.d("messageHandler: ", "ParseException: ", e);
+        }
 
+        if(description.equals("success"))
+        {
+            Intent switchActivityIntent = new Intent(this, JoinActivity.class);
+            switchActivityIntent.putExtra("picture", imageInByte);
+            startActivity(switchActivityIntent);
+        }else{
+            //Alert Failed to log in
+        }
     }
 }
