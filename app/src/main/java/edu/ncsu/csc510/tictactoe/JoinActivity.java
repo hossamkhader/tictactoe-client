@@ -17,6 +17,8 @@ import android.widget.RadioGroup;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class JoinActivity extends AppCompatActivity {
     ImageView image_view_obj;
@@ -24,7 +26,7 @@ public class JoinActivity extends AppCompatActivity {
     EditText gameid_textbox_obj;
     Button submit_btn_obj;
 
-    String username;
+    String usernamefrommainmenu;
     private WebSocketClientImpl ws;
 
     @Override
@@ -35,7 +37,7 @@ public class JoinActivity extends AppCompatActivity {
         setListener();
         Bundle extras = getIntent().getExtras();
         byte[] byteArray = extras.getByteArray("picture");
-        username = extras.getString("player_name");
+        usernamefrommainmenu = extras.getString("player_name");
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         image_view_obj.setImageBitmap(bmp);
         init_ws();
@@ -114,22 +116,57 @@ public class JoinActivity extends AppCompatActivity {
     private void switchActivities() {
         JSONObject action = new JSONObject();
         try {
-            action.put("action","create_game");
-            action.put("player_id", username);
+            switch(radiogroup_obj.getCheckedRadioButtonId()) {
+                case R.id.radio_new_game:
+                    action.put("action","create_game");
+                    action.put("player_id", usernamefrommainmenu);
+                    break;
+                case R.id.radio_join_game:
+                    action.put("action","join_game");
+                    action.put("game_id",gameid_textbox_obj.getText().toString());
+                    action.put("player_id", usernamefrommainmenu);
+                    break;
+                case R.id.radio_spectator_game:
+                    action.put("action","spectate_game");
+                    action.put("game_id",gameid_textbox_obj.getText().toString());
+                    action.put("player_id", usernamefrommainmenu);
+                    break;
+                default:
+                    // code block
+            }
         } catch (Exception e) {
             Log.d("JSONToObject", "Exception", e);
         }
         JSONArray data = new JSONArray();
         data.add(action);
         this.ws.send(data.toString());
-        Intent switchActivityIntent = new Intent(this, WaitingActivity.class);
-        startActivity(switchActivityIntent);
     }
 
     // This is passed to the websocket to use as the messageHandler for this page
     void messageHandler(String message) {
         // print message to log for testing purposes
-        Log.d("joinMSG", message);
+        Log.d("JoinActivity", message);
+
+        Object obj = null;
+        try {
+            obj = new JSONParser().parse(message);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        // typecasting obj to JSONObject
+        JSONObject jo = (JSONObject) obj;
+        String usernamefromserver = (String) jo.get("p0");
+        String gameidfromserver = (String) jo.get("game_id");
+        //if (radiogroup_obj.getCheckedRadioButtonId() == R.id.radio_new_game){
+            if (usernamefromserver.equals(usernamefrommainmenu)) {
+                this.ws.removeMessageHandler();
+                Intent switchActivityIntent = new Intent(this, WaitingActivity.class);
+                switchActivityIntent.putExtra("game-ID", gameidfromserver);
+                startActivity(switchActivityIntent);
+            }
+        //}
+
+
     }
 
     // This method was just used to repeat the set username action on this page

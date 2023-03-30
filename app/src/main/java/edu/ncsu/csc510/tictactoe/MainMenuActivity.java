@@ -22,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
@@ -55,14 +57,6 @@ public class MainMenuActivity extends AppCompatActivity {
 
     private void switchActivities() {
         if(init_ws()){
-            Intent switchActivityIntent = new Intent(this, JoinActivity.class);
-            Bitmap bitmap = ((BitmapDrawable) image_view_obj.getDrawable()).getBitmap();
-            ByteArrayOutputStream game_img_byte_array = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, game_img_byte_array);
-            byte[] imageInByte = game_img_byte_array.toByteArray();
-            switchActivityIntent.putExtra("picture", imageInByte);
-            switchActivityIntent.putExtra("player_name", username_textbox_obj.getText().toString());
-            startActivity(switchActivityIntent);
             JSONObject action = new JSONObject();
             try {
                 action.put("action", "set_player_name");
@@ -74,7 +68,6 @@ public class MainMenuActivity extends AppCompatActivity {
             data.add(action);
 //            switchActivityIntent.putExtra("ws_message", data.toString());
             this.ws.send(data.toString());
-            this.ws.removeMessageHandler();
         }
         else{
             // Create the object of AlertDialog Builder class
@@ -202,9 +195,55 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     // This is passed to the websocket to use as the messageHandler for this page
-    void messageHandler(String message) {
+    void messageHandler(String message){
         // print message to log for testing purposes
-        Log.d("mainMSG", message);
+        Log.d("MainMenuActivityHandler", message);
+        Object obj = null;
+        try {
+            obj = new JSONParser().parse(message);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        // typecasting obj to JSONObject
+        JSONObject jo = (JSONObject) obj;
+        String username = (String) jo.get("username");
+        String description = (String) jo.get("description");
+        String action = (String) jo.get("action");
 
+            if(description.equals("success")) {
+                this.ws.removeMessageHandler();
+                Intent switchActivityIntent = new Intent(this, JoinActivity.class);
+                Bitmap bitmap = ((BitmapDrawable) image_view_obj.getDrawable()).getBitmap();
+                ByteArrayOutputStream game_img_byte_array = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, game_img_byte_array);
+                byte[] imageInByte = game_img_byte_array.toByteArray();
+                switchActivityIntent.putExtra("picture", imageInByte);
+                switchActivityIntent.putExtra("player_name", username_textbox_obj.getText().toString());
+                startActivity(switchActivityIntent);
+            }
+            else{
+                // Create the object of AlertDialog Builder class
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
+
+                // Set the message show for the Alert time
+                builder.setMessage("Authentication Failed");
+
+                // Set Alert Title
+                builder.setTitle("Check Credentials");
+
+                // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
+                builder.setCancelable(false);
+
+                // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
+                builder.setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                    // When the user click yes button then app will close
+                });
+
+                // Create the Alert dialog
+                AlertDialog alertDialog = builder.create();
+                // Show the Alert Dialog box
+                alertDialog.show();
+                WebSocketClientSingleton.clearInstance();
+        }
     }
 }
