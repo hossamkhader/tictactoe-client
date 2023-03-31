@@ -9,18 +9,26 @@ import java.net.URI;
 public class WebSocketClientSingleton {
     static WebSocketClientImpl ws_instance = null;
 
+    static GameState gameState = null;
+
+    static User user = null;
     // private constructor can't be accessed outside the class
     public WebSocketClientSingleton() {
     }
 
     static public void clearInstance(){
+
         ws_instance = null;
+        gameState = null;
+        user = null;
     }
     // Factory method to provide the users with instances
     static public WebSocketClientImpl getInstance(URI uri)
     {
         if (ws_instance == null) {
                 ws_instance = new WebSocketClientImpl(uri);
+                gameState = new GameState();
+                user = new User();
         }
         return ws_instance;
     }
@@ -32,6 +40,17 @@ public class WebSocketClientSingleton {
         else
             throw nullPointer;
     }
+    static public GameState getGameState()
+    {
+        return gameState;
+    }
+    static public void setGameState(GameState game)
+    {
+        gameState = game;
+    }
+
+    static public User getUser(){return user;}
+    static  public void setUser(User usr){user = usr;}
 }
 
 class WebSocketClientImpl extends WebSocketClient {

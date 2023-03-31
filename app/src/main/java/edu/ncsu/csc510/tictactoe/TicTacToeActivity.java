@@ -18,9 +18,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.simple.JSONObject;
@@ -47,7 +49,6 @@ public class TicTacToeActivity extends AppCompatActivity {
     public static final int END = 3;
 
     private WebSocketClientImpl ws;
-    private GameState gameState = null;
     private int testCounter = 0;
     private LinearLayout layout;
     private List<ImageView> imageList;
@@ -59,10 +60,29 @@ public class TicTacToeActivity extends AppCompatActivity {
     private String winner;
 
     boolean init_ws() {
+        boolean succeed = false;
         try {
             this.ws = WebSocketClientSingleton.getInstance();
             this.ws.removeMessageHandler();
             this.ws.addMessageHandler(this::updateClient);
+
+
+            //I have to add this code below because the other device from waiting stage lost the connection to the server.
+            //maybe I am wrong. the android mobile game is new for me and had learned java long long time ago.
+            //
+            JSONArray data = new JSONArray();
+            GameState gameState = WebSocketClientSingleton.getGameState();
+            JSONObject op = new JSONObject();
+            op.put("op", "replace");
+            op.put("path", String.format("/%s/piece-%s", gameState.getGame_id(), Integer.toString(0)));
+            op.put("value", gameState.getActivePlayer());
+            op.put("last_move", new Date().getTime());
+            data.add(op);
+            this.ws.send(data.toString());
+
+
+
+            return true;
         }
         catch (Exception e) {
             Log.d("init_ws", "Exception", e);
@@ -73,7 +93,7 @@ public class TicTacToeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        init_ws();
         setContentView(R.layout.tictactoe);
         uiThread = Thread.currentThread();
         layout = findViewById(R.id.linearLayout);
@@ -91,11 +111,10 @@ public class TicTacToeActivity extends AppCompatActivity {
                 if (inner.getChildAt(j) instanceof ImageView) {
                     ImageView image = (ImageView) inner.getChildAt(j);
                     imageList.add(image);
-                    //Log.d("getImageViews() TAG "  + loop + j + ": " ,image.getTag().toString());
                 }
             }
         }
-        init_ws();
+
     }
 
     protected void onStop() {
@@ -109,25 +128,19 @@ public class TicTacToeActivity extends AppCompatActivity {
     // players tap in an empty box of the grid
     @SuppressLint("SetTextI18n")
     public void playerTap(View view) {
+        GameState gameState = WebSocketClientSingleton.getGameState();
         ImageView img = (ImageView) view;
         String tappedImageId = img.getResources().getResourceEntryName(img.getId());
         int boardNum = Integer.parseInt(tappedImageId.substring(tappedImageId.length() - 1));
 
         try {
-            if (this.ws == null || !this.ws.isOpen()) {
-                init_ws();
-            }
-            if (gameState.getWinner() != null) {
-                gameReset(view);
-            } else {
-                gameState.board[boardNum] = gameState.getActivePlayer();
-                //displayGameState();
-                updateGameBoard();
-                JSONObject op = gameStateToJson();
-                JSONArray data = new JSONArray();
-                data.add(op);
-                this.ws.send(data.toString());
-            }
+            //gameState.board[boardNum] = gameState.getActivePlayer();
+            //updateGameBoard();
+            JSONObject op = gameStateToJson(boardNum);
+            JSONArray data = new JSONArray();
+            data.add(op);
+            this.ws.send(data.toString());
+            //WebSocketClientSingleton.setGameState(gameState);
         } catch (Exception e) {
             Log.d("playerTap", "Exception", e);
         }
@@ -137,46 +150,30 @@ public class TicTacToeActivity extends AppCompatActivity {
     void updateClient(String message) {
         Log.d("Message from server In updateClient: ", message);
         try {
-            jsonToGameState(message);
+            GameState gameState = JsonUtility.jsonToGameState(message);
+            WebSocketClientSingleton.setGameState(gameState);
             updateGameBoard();
 
         } catch (Exception e) {
             Log.d("updateClient", "Exception", e);
         }
     }
-
-
-    //Find all imageView of the game board.
-    public List<ImageView> getImageViews(LinearLayout ll) {
-        List<ImageView> list = new ArrayList<ImageView>();
-        for (int loop = 0; loop < ll.getChildCount(); loop++) {
-            LinearLayout inner = (LinearLayout) ll.getChildAt(loop);
-            for (int j = 0; j < inner.getChildCount(); j++) {
-                if (inner.getChildAt(j) instanceof ImageView) {
-                    ImageView image = (ImageView) inner.getChildAt(j);
-                    list.add(image);
-
-                }
-            }
-        }
-        return list;
-    }
     //The runOnUiThread method is necessary to update UI.
     public void updateGameBoard() {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                GameState gameState = WebSocketClientSingleton.getGameState();
                 for (int i = 0; i < imageList.size(); i++) {
                     ImageView img = imageList.get(i);
                     //String marked = img.getTag().toString().isEmpty()? null : img.getTag().toString();
-                    if (!gameState.board[i].equals(img.getTag().toString())) {
+                    if(gameState.board[i] != null)
+                    {
                         if (gameState.board[i].equals("0")) {
                             img.setImageResource(R.drawable.x);
                             img.setTag("0");
                             img.refreshDrawableState();
                             Log.d("updateGameBoard() gameState.board[" + i + "]: ", gameState.board[i]);
-
-
                         }
                         if (gameState.board[i].equals("1")) {
                             img.setImageResource(R.drawable.o);
@@ -186,7 +183,6 @@ public class TicTacToeActivity extends AppCompatActivity {
                         }
                     }
                 }
-
                 // Display status
                 if (gameState.getWinner() != null) {
                     if (gameState.getWinner().equals("0")) {
@@ -216,60 +212,27 @@ public class TicTacToeActivity extends AppCompatActivity {
     }
 
     //Convert object to Json string
-    public JSONObject gameStateToJson() {
+    public JSONObject gameStateToJson(int piece) {
+        GameState gameState = WebSocketClientSingleton.getGameState();
         JSONObject op = new JSONObject();
-        String[] board = new String[9];
         try {
-            op.put("game_id", gameState.getGame_id());
-            op.put("activePlayer", gameState.getActivePlayer());
-            op.put("winner", gameState.getWinner());
-            op.put("p0", gameState.getP0());
-            op.put("p1", gameState.getp1());
-            op.put("last_move", gameState.getLast_move());
-            for (int i = 0; i < gameState.board.length; i++) {
-                op.put("piece-" + i, gameState.board[i]);
-            }
+            op.put("op", "replace");
+            op.put("path", String.format("/%s/piece-%s", gameState.getGame_id(), Integer.toString(piece)));
+            op.put("value", gameState.getActivePlayer());
+            op.put("last_move", new Date().getTime());
         } catch (Exception e) {
             Log.d("JSONToObject", "Exception", e);
         }
-
         return op;
     }
 
     //Convert Json string to GameState
-    public void jsonToGameState(String message) {
-        try {
-            JSONObject obj = (JSONObject) new JSONParser().parse(message);
-            if (obj.get("game_id") != null)
-                gameState.setGame_id(obj.get("game_id").toString());
-            if (obj.get("activePlayer") != null)
-                gameState.setActivePlayer(obj.get("activePlayer").toString());
-            if (obj.get("last_move") != null)
-                gameState.setLast_move(obj.get("last_move").toString());
-            if (obj.get("p1") != null)
-                gameState.setp1(obj.get("p1").toString());
-            if (obj.get("p0") != null)
-                gameState.setP0(obj.get("p0").toString());
-            if (obj.get("winner") != null)
-                gameState.setWinner(obj.get("winner").toString());
 
-            String[] board = new String[9];
-            for (int i = 0; i < gameState.board.length; i++) {
-
-                board[i] = obj.get("piece-" + i).toString();
-            }
-            gameState.board = board;
-
-        } catch (Exception e) {
-            Log.d("updateClient", "Exception", e);
-
-        }
-    }
     // reset the game
     @SuppressLint("SetTextI18n")
     public void gameReset(View view) {
         // remove all the images from the boxes inside the grid
-        gameState = new GameState();
+
         ((ImageView) findViewById(R.id.imageView0)).setImageResource(0);
         ((ImageView) findViewById(R.id.imageView1)).setImageResource(0);
         ((ImageView) findViewById(R.id.imageView2)).setImageResource(0);
