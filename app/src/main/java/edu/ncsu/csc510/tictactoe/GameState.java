@@ -12,7 +12,7 @@ public class GameState {
     private Date last_move = null;
 
     // private boolean gameActive = false;
-    public String[] board = {"2", "2", "2", "2", "2", "2", "2", "2", "2"};
+    public String[] board = {"null", "null", "null", "null", "null", "null", "null", "null", "null"};
 
     public String getMode() {
         return mode;

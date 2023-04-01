@@ -19,8 +19,10 @@ import android.widget.RadioGroup;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Date;
 
 public class JoinActivity extends AppCompatActivity {
     ImageView image_view_obj;
@@ -139,8 +141,6 @@ public class JoinActivity extends AppCompatActivity {
         {
             Log.d("Join Message Handler",  "Exception: ", e);
         }
-
-
     }
 
     // This method was just used to repeat the set username action on this page
