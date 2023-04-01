@@ -22,8 +22,10 @@ public class JsonUtility {
                     gameState.setActivePlayer(obj.get("activePlayer").toString());
                 if (obj.get("last_move") != null) {
                     String str = obj.get("last_move").toString();
-                    Date date = new Date(Long.parseLong(str));
-                    gameState.setLast_move(date);
+                    double doubleNum = Double. parseDouble(str);
+                    long myLong = System.currentTimeMillis() + ((long) (doubleNum * 1000));
+                    java.util.Date datetime = new java.util.Date(myLong);
+                    gameState.setLast_move(datetime);
                 }
                 if (obj.get("p1") != null)
                     gameState.setP1(obj.get("p1").toString());

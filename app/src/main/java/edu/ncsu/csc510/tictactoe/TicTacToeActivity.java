@@ -62,9 +62,9 @@ public class TicTacToeActivity extends AppCompatActivity {
     void init_ws() {
         try {
             String address = "10.0.2.2";
-            String url = String.format("ws://%s:8000", address);
-            this.ws = new WebSocketClientImpl(new URI(url));
-            this.ws.addHeader("game-id", "0000000000");
+            String url = String.format("ws://%s:8000/%s", address, WebSocketClientSingleton.getGameState().getGame_id());
+            this.ws = WebSocketClientSingleton.reconnectInstance(URI.create(url));
+            //this.ws = WebSocketClientSingleton.getInstance();
             this.ws.connectBlocking();
             this.ws.addMessageHandler(this::updateClient);
         }
@@ -124,8 +124,8 @@ public class TicTacToeActivity extends AppCompatActivity {
             JSONObject op = gameStateToJson(boardNum);
             JSONArray data = new JSONArray();
             data.add(op);
-            //this.ws.send(data.toString());
-            this.ws.send(op.toJSONString());
+            this.ws.send(data.toString());
+            //this.ws.send(op.toJSONString());
             //WebSocketClientSingleton.setGameState(gameState);
         } catch (Exception e) {
             Log.d("playerTap", "Exception", e);
@@ -137,13 +137,15 @@ public class TicTacToeActivity extends AppCompatActivity {
         Log.d("Message from server In updateClient: ", message);
         try {
             JSONObject obj = (JSONObject) new JSONParser().parse(message);
-            String action = obj.get("action").toString();
-            if(!action.equals("game_ready"))
+            GameState gameState = JsonUtility.jsonToGameState(message);
+            WebSocketClientSingleton.setGameState(gameState);
+            updateGameBoard();
+            /*if(!action.equals("game_ready"))
             {
                 GameState gameState = JsonUtility.jsonToGameState(message);
                 WebSocketClientSingleton.setGameState(gameState);
                 updateGameBoard();
-            }
+            }*/
         } catch (Exception e) {
             Log.d("updateClient", "Exception", e);
         }

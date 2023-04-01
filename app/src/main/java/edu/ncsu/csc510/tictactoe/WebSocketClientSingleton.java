@@ -32,6 +32,11 @@ public class WebSocketClientSingleton {
         }
         return ws_instance;
     }
+    static public WebSocketClientImpl reconnectInstance(URI uri)
+    {
+        ws_instance = new WebSocketClientImpl(uri);
+        return ws_instance;
+    }
     static public WebSocketClientImpl getInstance()
     {
         NullPointerException nullPointer = new NullPointerException();
