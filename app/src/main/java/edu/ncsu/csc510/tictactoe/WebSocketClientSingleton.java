@@ -6,6 +6,7 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
+import java.util.Arrays;
 
 public class WebSocketClientSingleton {
     static WebSocketClientImpl ws_instance = null;
@@ -88,7 +89,12 @@ class WebSocketClientImpl extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-
+        System.out.println("Printing stack trace:");
+        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+        for (int i = 1; i < elements.length; i++) {
+            StackTraceElement s = elements[i];
+            System.out.println("\tat " + s.getClassName() + "." + s.getMethodName() + "(" + s.getFileName() + ":" + s.getLineNumber() + ")");
+        }
     }
 
     @Override
