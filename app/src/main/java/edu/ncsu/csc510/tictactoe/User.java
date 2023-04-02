@@ -5,7 +5,9 @@ public class User {
     private String username;
     private String mode;
 
-    public User(){}
+    public User() {
+    }
+
     public User(String player_id, String username) {
         this.player_id = player_id;
         this.username = username;
@@ -18,10 +20,12 @@ public class User {
     public void setPlayer_id(String player_id) {
         this.player_id = player_id;
     }
-    public String getUsername(){
+
+    public String getUsername() {
         return this.username;
     }
-    public void setUsername(String username){
+
+    public void setUsername(String username) {
         this.username = username;
     }
 

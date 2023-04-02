@@ -61,14 +61,10 @@ public class TicTacToeActivity extends AppCompatActivity {
 
     void init_ws() {
         try {
-            String address = "10.0.2.2";
-            String url = String.format("ws://%s:8000/%s", address, WebSocketClientSingleton.getGameState().getGame_id());
-            this.ws = WebSocketClientSingleton.reconnectInstance(URI.create(url));
-            //this.ws = WebSocketClientSingleton.getInstance();
-            this.ws.connectBlocking();
+            this.ws = WebSocketClientSingleton.getInstance();
             this.ws.addMessageHandler(this::updateClient);
-        }
-        catch (Exception e) {
+            updateGameBoard();
+        } catch (Exception e) {
             Log.d("init_ws", "Exception", e);
         }
     }
@@ -76,7 +72,6 @@ public class TicTacToeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.tictactoe);
         uiThread = Thread.currentThread();
         layout = findViewById(R.id.linearLayout);
@@ -115,7 +110,7 @@ public class TicTacToeActivity extends AppCompatActivity {
         int boardNum = Integer.parseInt(tappedImageId.substring(tappedImageId.length() - 1));
 
         try {
-            if (this.ws==null || !this.ws.isOpen()) {
+            if (this.ws == null || !this.ws.isOpen()) {
                 init_ws();
             }
 
@@ -150,6 +145,7 @@ public class TicTacToeActivity extends AppCompatActivity {
             Log.d("updateClient", "Exception", e);
         }
     }
+
     //The runOnUiThread method is necessary to update UI.
     public void updateGameBoard() {
         Runnable runnable = new Runnable() {
@@ -159,8 +155,7 @@ public class TicTacToeActivity extends AppCompatActivity {
                 for (int i = 0; i < imageList.size(); i++) {
                     ImageView img = imageList.get(i);
                     //String marked = img.getTag().toString().isEmpty()? null : img.getTag().toString();
-                    if(gameState.board[i] != null)
-                    {
+                    if (gameState.board[i] != null) {
                         if (gameState.board[i].equals("0")) {
                             img.setImageResource(R.drawable.x);
                             img.setTag("0");

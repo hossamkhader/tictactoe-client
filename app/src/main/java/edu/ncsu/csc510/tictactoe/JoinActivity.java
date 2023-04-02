@@ -29,7 +29,7 @@ public class JoinActivity extends AppCompatActivity {
     RadioGroup radiogroup_obj;
     EditText gameid_textbox_obj;
     Button submit_btn_obj;
-
+    String gameId;
     private WebSocketClientImpl ws;
 
     @Override
@@ -51,8 +51,7 @@ public class JoinActivity extends AppCompatActivity {
             this.ws.removeMessageHandler();
             this.ws.addMessageHandler(this::messageHandler);
 //            testMessageHandler();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.d("join_activity_init_ws", "Exception", e);
         }
         return false;
@@ -66,7 +65,8 @@ public class JoinActivity extends AppCompatActivity {
         //hide the gameid initially
         gameid_textbox_obj.setVisibility(View.INVISIBLE);
     }
-    private void setListener(){
+
+    private void setListener() {
         radiogroup_obj.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -80,20 +80,21 @@ public class JoinActivity extends AppCompatActivity {
         submit_btn_obj.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String selectedValue = ((RadioButton)findViewById(radiogroup_obj.getCheckedRadioButtonId())).getText().toString();
-                String gameId = gameid_textbox_obj.getText().toString();
+                String selectedValue = ((RadioButton) findViewById(radiogroup_obj.getCheckedRadioButtonId())).getText().toString();
+                gameId = gameid_textbox_obj.getText().toString();
                 switchActivities(selectedValue, gameId);
             }
         });
     }
+
     private void switchActivities(String selected, String gameId) {
         User user = WebSocketClientSingleton.getUser();
         JSONObject request = new JSONObject();
-        if(selected.isEmpty()){
+
+        if (selected.isEmpty()) {
             //Alert message
-        }else{
-            if(selected.equals("New Game"))
-            {
+        } else {
+            if (selected.equals("New Game")) {
                 request.put("action", "create_game");
                 request.put("player_id", user.getPlayer_id());
                 user.setMode("create");
@@ -123,23 +124,22 @@ public class JoinActivity extends AppCompatActivity {
         // print message to log for testing purposes
         Log.d("joinMSG", message);
         User user = WebSocketClientSingleton.getUser();
-        try{
-            GameState gameState = JsonUtility.jsonToGameState(message);
-            WebSocketClientSingleton.setGameState(gameState);
-            if(user.getMode().equals("create"))
-            {
+        try {
+
+            if (user.getMode().equals("create")) {
+                GameState gameState = JsonUtility.jsonToGameState(message);
+                WebSocketClientSingleton.setGameState(gameState);
                 Intent switchActivityIntent = new Intent(this, WaitingActivity.class);
                 startActivity(switchActivityIntent);
             } else if (user.getMode().equals("join")) {
+                WebSocketClientSingleton.getGameState().setGame_id(gameId);
                 Intent switchActivityIntent = new Intent(this, TicTacToeActivity.class);
                 startActivity(switchActivityIntent);
-            }else
-            {
+            } else {
                 //not exist yet
             }
-        }catch(Exception e)
-        {
-            Log.d("Join Message Handler",  "Exception: ", e);
+        } catch (Exception e) {
+            Log.d("Join Message Handler", "Exception: ", e);
         }
     }
 

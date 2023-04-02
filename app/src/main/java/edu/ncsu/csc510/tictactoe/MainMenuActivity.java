@@ -39,6 +39,7 @@ public class MainMenuActivity extends AppCompatActivity {
     Button Login_btn_obj, forget_btn_obj;
     EditText server_address_textbox_obj;
     byte[] imageInByte = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +58,7 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     private void switchActivities() {
-        if(init_ws()){
+        if (init_ws()) {
 
             Bitmap bitmap = ((BitmapDrawable) image_view_obj.getDrawable()).getBitmap();
             ByteArrayOutputStream game_img_byte_array = new ByteArrayOutputStream();
@@ -75,8 +76,7 @@ public class MainMenuActivity extends AppCompatActivity {
             data.add(action);
 //            switchActivityIntent.putExtra("ws_message", data.toString());
             this.ws.send(data.toString());
-        }
-        else{
+        } else {
             // Create the object of AlertDialog Builder class
             AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
 
@@ -116,35 +116,34 @@ public class MainMenuActivity extends AppCompatActivity {
         arr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         game_selection_spinner_obj.setAdapter(arr_adapter);
     }
-    class WSException extends Exception
-    {
-        public WSException(String message)
-        {
+
+    class WSException extends Exception {
+        public WSException(String message) {
             super(message);
         }
     }
+
     boolean init_ws() {
         try {
             boolean succeed = false;
 
             String url = String.format("ws://%s:8000", server_address_textbox_obj.getText());
             this.ws = WebSocketClientSingleton.getInstance(URI.create(url));
-            succeed = this.ws.connectBlocking(2L,  TimeUnit.SECONDS);
-            if(succeed) {
+            succeed = this.ws.connectBlocking(2L, TimeUnit.SECONDS);
+            if (succeed) {
                 this.ws.removeMessageHandler();
                 this.ws.addMessageHandler(this::messageHandler);
                 return true;
-            }
-            else {
+            } else {
                 throw new WSException("Socket Fail");
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.d("init_ws", "Exception", e);
             WebSocketClientSingleton.clearInstance();
         }
         return false;
     }
+
     private void setListeners() {
         //create spinner object listener so user can select game properly
         game_selection_spinner_obj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -189,6 +188,7 @@ public class MainMenuActivity extends AppCompatActivity {
         username_textbox_obj.addTextChangedListener(mTextboxWatcher);
 
     }
+
     //This function checks if username and server address field is filled before login button is
     // enabled
     void checkFieldsForEmptyValues() {
@@ -208,7 +208,7 @@ public class MainMenuActivity extends AppCompatActivity {
         // print message to log for testing purposes
         Log.d("mainMSG", message);
         String action, description;
-        action = description  = "";
+        action = description = "";
         User user = WebSocketClientSingleton.getUser();
         try {
             JSONObject obj = (JSONObject) new JSONParser().parse(message);
@@ -220,12 +220,11 @@ public class MainMenuActivity extends AppCompatActivity {
             Log.d("messageHandler: ", "ParseException: ", e);
         }
 
-        if(description.equals("success"))
-        {
+        if (description.equals("success")) {
             Intent switchActivityIntent = new Intent(this, JoinActivity.class);
             switchActivityIntent.putExtra("picture", imageInByte);
             startActivity(switchActivityIntent);
-        }else{
+        } else {
             //Alert Failed to log in
         }
     }
