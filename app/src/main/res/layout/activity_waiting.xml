@@ -30,21 +30,4 @@
         android:layout_marginTop="300dp"
         />
 
-    <Button
-        android:id="@+id/button_skip_waiting"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_waiting"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/skip"
-        android:backgroundTint="@drawable/button_background_color"
-        android:textColor="@drawable/button_text_color"
-        android:textSize="15sp"
-        android:textStyle="bold"
-
-        />
-
 </RelativeLayout>

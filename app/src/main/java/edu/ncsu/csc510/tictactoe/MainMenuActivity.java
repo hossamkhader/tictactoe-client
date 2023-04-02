@@ -76,7 +76,8 @@ public class MainMenuActivity extends AppCompatActivity {
             data.add(action);
 //            switchActivityIntent.putExtra("ws_message", data.toString());
             this.ws.send(data.toString());
-        } else {
+        }
+        else{
             // Create the object of AlertDialog Builder class
             AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
 
@@ -116,9 +117,10 @@ public class MainMenuActivity extends AppCompatActivity {
         arr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         game_selection_spinner_obj.setAdapter(arr_adapter);
     }
-
-    class WSException extends Exception {
-        public WSException(String message) {
+    class WSException extends Exception
+    {
+        public WSException(String message)
+        {
             super(message);
         }
     }
@@ -134,10 +136,12 @@ public class MainMenuActivity extends AppCompatActivity {
                 this.ws.removeMessageHandler();
                 this.ws.addMessageHandler(this::messageHandler);
                 return true;
-            } else {
+            }
+            else {
                 throw new WSException("Socket Fail");
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Log.d("init_ws", "Exception", e);
             WebSocketClientSingleton.clearInstance();
         }
@@ -220,12 +224,35 @@ public class MainMenuActivity extends AppCompatActivity {
             Log.d("messageHandler: ", "ParseException: ", e);
         }
 
-        if (description.equals("success")) {
+        if(description.equals("success"))
+        {
             Intent switchActivityIntent = new Intent(this, JoinActivity.class);
             switchActivityIntent.putExtra("picture", imageInByte);
             startActivity(switchActivityIntent);
-        } else {
-            //Alert Failed to log in
+            this.ws.removeMessageHandler();
+        }else{
+            // Create the object of AlertDialog Builder class
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
+
+            // Set the message show for the Alert time
+            builder.setMessage("Authentication Failed");
+
+            // Set Alert Title
+            builder.setTitle("Check Credentials");
+
+            // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
+            builder.setCancelable(false);
+
+            // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
+            builder.setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                // When the user click yes button then app will close
+            });
+
+            // Create the Alert dialog
+            AlertDialog alertDialog = builder.create();
+            // Show the Alert Dialog box
+            alertDialog.show();
+            WebSocketClientSingleton.clearInstance();
         }
     }
 }
