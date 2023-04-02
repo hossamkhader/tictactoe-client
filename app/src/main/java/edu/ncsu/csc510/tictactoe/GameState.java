@@ -1,5 +1,7 @@
 package edu.ncsu.csc510.tictactoe;
 
+import java.util.Date;
+
 public class GameState {
     private String mode = null;
     private String game_id = null;
@@ -7,10 +9,10 @@ public class GameState {
     private String winner = null;
     private String p0 = null;
     private String p1 = null;
-    private String last_move = null;
+    private Date last_move = null;
 
     // private boolean gameActive = false;
-    public String[] board = {"2", "2", "2", "2", "2", "2", "2", "2", "2"};
+    public String[] board = {"null", "null", "null", "null", "null", "null", "null", "null", "null"};
 
     public String getMode() {
         return mode;
@@ -51,19 +53,19 @@ public class GameState {
     {
         this.p0 = p0;
     }
-    public String getp1()
+    public String getP1()
     {
         return  p1;
     }
-    public void setp1(String p1)
+    public void setP1(String p1)
     {
         this.p1 = p1;
     }
-    public String getLast_move()
+    public Date getLast_move()
     {
         return  last_move;
     }
-    public void setLast_move(String last_move)
+    public void setLast_move(Date last_move)
     {
         this.last_move = last_move;
     }
