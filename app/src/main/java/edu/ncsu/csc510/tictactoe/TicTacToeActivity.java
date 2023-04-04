@@ -32,11 +32,6 @@ import org.json.simple.parser.JSONParser;
 // Player representation
 // 0 - X
 // 1 - O
-// State meanings:
-//    0 - X
-//    1 - O
-//    2 - Null
-// put all win positions in a 2D array
 //int[][] winPositions = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8},
 //            {0, 3, 6}, {1, 4, 7}, {2, 5, 8},
 //           {0, 4, 8}, {2, 4, 6}};
@@ -48,16 +43,13 @@ public class TicTacToeActivity extends AppCompatActivity {
     public static final int PLAYING = 2;
     public static final int END = 3;
 
+    private static final String XPLAYER = "0";
+    private static final String OPLAYER = "1";
+
     private WebSocketClientImpl ws;
-    private int testCounter = 0;
     private LinearLayout layout;
     private List<ImageView> imageList;
     private TextView status;
-    private Thread uiThread;
-    private String gameId;
-    private final String game_id = "0000000000";
-
-    private String winner;
 
     void init_ws() {
         try {
@@ -73,12 +65,8 @@ public class TicTacToeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tictactoe);
-        uiThread = Thread.currentThread();
         layout = findViewById(R.id.linearLayout);
         status = findViewById(R.id.status);
-
-        Intent intent = getIntent();
-        gameId = intent.getStringExtra("gameId");
 
         imageList = new ArrayList<ImageView>();
         for (int loop = 0; loop < layout.getChildCount(); loop++) {
@@ -113,15 +101,10 @@ public class TicTacToeActivity extends AppCompatActivity {
             if (this.ws == null || !this.ws.isOpen()) {
                 init_ws();
             }
-
-            //gameState.board[boardNum] = gameState.getActivePlayer();
-            //updateGameBoard();
             JSONObject op = gameStateToJson(boardNum);
             JSONArray data = new JSONArray();
             data.add(op);
             this.ws.send(data.toString());
-            //this.ws.send(op.toJSONString());
-            //WebSocketClientSingleton.setGameState(gameState);
         } catch (Exception e) {
             Log.d("playerTap", "Exception", e);
         }
@@ -135,12 +118,6 @@ public class TicTacToeActivity extends AppCompatActivity {
             GameState gameState = JsonUtility.jsonToGameState(message);
             WebSocketClientSingleton.setGameState(gameState);
             updateGameBoard();
-            /*if(!action.equals("game_ready"))
-            {
-                GameState gameState = JsonUtility.jsonToGameState(message);
-                WebSocketClientSingleton.setGameState(gameState);
-                updateGameBoard();
-            }*/
         } catch (Exception e) {
             Log.d("updateClient", "Exception", e);
         }
@@ -154,17 +131,16 @@ public class TicTacToeActivity extends AppCompatActivity {
                 GameState gameState = WebSocketClientSingleton.getGameState();
                 for (int i = 0; i < imageList.size(); i++) {
                     ImageView img = imageList.get(i);
-                    //String marked = img.getTag().toString().isEmpty()? null : img.getTag().toString();
                     if (gameState.board[i] != null) {
-                        if (gameState.board[i].equals("0")) {
+                        if (gameState.board[i].equals(XPLAYER)) {
                             img.setImageResource(R.drawable.x);
-                            img.setTag("0");
+                            img.setTag(XPLAYER);
                             img.refreshDrawableState();
                             Log.d("updateGameBoard() gameState.board[" + i + "]: ", gameState.board[i]);
                         }
-                        if (gameState.board[i].equals("1")) {
+                        if (gameState.board[i].equals(OPLAYER)) {
                             img.setImageResource(R.drawable.o);
-                            img.setTag("1");
+                            img.setTag(OPLAYER);
                             img.refreshDrawableState();
                             Log.d("updateGameBoard () gameState.board[" + i + "]: ", gameState.board[i]);
                         }
@@ -172,21 +148,21 @@ public class TicTacToeActivity extends AppCompatActivity {
                 }
                 // Display status
                 if (gameState.getWinner() != null) {
-                    if (gameState.getWinner().equals("0")) {
+                    if (gameState.getWinner().equals(XPLAYER)) {
                         status.setText("X has won");
                         Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                     }
-                    if (gameState.getWinner().equals("1")) {
+                    if (gameState.getWinner().equals(OPLAYER)) {
                         status.setText("O has won");
                         Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                     }
                 } else {
                     if (gameState.getActivePlayer() != null) {
-                        if (gameState.getActivePlayer().equals("0")) {
+                        if (gameState.getActivePlayer().equals(XPLAYER)) {
                             status.setText("X's Turn - Tap to play");
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
-                        if (gameState.getActivePlayer().equals("1")) {
+                        if (gameState.getActivePlayer().equals(OPLAYER)) {
                             status.setText("O's Turn - Tap to play");
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
@@ -213,8 +189,6 @@ public class TicTacToeActivity extends AppCompatActivity {
         }
         return op;
     }
-
-    //Convert Json string to GameState
 
     // reset the game
     @SuppressLint("SetTextI18n")
