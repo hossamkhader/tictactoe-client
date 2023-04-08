@@ -8,6 +8,8 @@ public class GameState {
     private String winner = null;
     private String p0 = null;
     private String p1 = null;
+    private String p0_name = null;
+    private String p1_name = null;
     private Date last_move = null;
 
     // private boolean gameActive = false;
@@ -52,6 +54,22 @@ public class GameState {
     public void setP1(String p1)
     {
         this.p1 = p1;
+    }
+    public String getP0_name()
+    {
+        return  p0_name;
+    }
+    public void setP0_nmae(String p0_name)
+    {
+        this.p0_name = p0_name;
+    }
+    public String getP1_name()
+    {
+        return  p1_name;
+    }
+    public void setP1_nmae(String p1_name)
+    {
+        this.p1_name = p1_name;
     }
     public Date getLast_move()
     {

@@ -1,13 +1,17 @@
 package edu.ncsu.csc510.tictactoe;
 
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -67,6 +71,15 @@ public class TicTacToeActivity extends AppCompatActivity {
         setContentView(R.layout.tictactoe);
         layout = findViewById(R.id.linearLayout);
         status = findViewById(R.id.status);
+        ImageView imgPlayerXO = findViewById(R.id.playerX);
+        TextView username0 = findViewById(R.id.username0);
+        ImageView imgPlayerO = findViewById(R.id.playerO);
+        TextView username1 = findViewById(R.id.username1);
+
+        //Set players' names
+        GameState gameState = WebSocketClientSingleton.getGameState();
+        username0.setText("Deana");
+        username1.setText("Grace");
 
         imageList = new ArrayList<ImageView>();
         for (int loop = 0; loop < layout.getChildCount(); loop++) {
@@ -129,6 +142,8 @@ public class TicTacToeActivity extends AppCompatActivity {
             @Override
             public void run() {
                 GameState gameState = WebSocketClientSingleton.getGameState();
+                String player1 = gameState.getP0();
+                String player2 = gameState.getP1();
                 for (int i = 0; i < imageList.size(); i++) {
                     ImageView img = imageList.get(i);
                     if (gameState.board[i] != null) {
@@ -149,21 +164,21 @@ public class TicTacToeActivity extends AppCompatActivity {
                 // Display status
                 if (gameState.getWinner() != null) {
                     if (gameState.getWinner().equals(XPLAYER)) {
-                        status.setText("X has won");
+                        status.setText(player1 + " has won");
                         Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                     }
                     if (gameState.getWinner().equals(OPLAYER)) {
-                        status.setText("O has won");
+                        status.setText(player2 + " has won");
                         Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                     }
                 } else {
                     if (gameState.getActivePlayer() != null) {
                         if (gameState.getActivePlayer().equals(XPLAYER)) {
-                            status.setText("X's Turn - Tap to play");
+                            status.setText(player1 + "'s Turn - Tap to play");
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
                         if (gameState.getActivePlayer().equals(OPLAYER)) {
-                            status.setText("O's Turn - Tap to play");
+                            status.setText(player2 + "'s Turn - Tap to play");
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
                     }
@@ -188,6 +203,37 @@ public class TicTacToeActivity extends AppCompatActivity {
             Log.d("JSONToObject", "Exception", e);
         }
         return op;
+    }
+
+    //
+    public void showDialog(View view){
+        // Create the object of AlertDialog Builder class
+        AlertDialog.Builder builder = new AlertDialog.Builder(TicTacToeActivity.this);
+
+
+        // Set the message show for the Alert time
+        builder.setMessage("Deana Won!");
+
+        // Set Alert Title
+        builder.setTitle("Message");
+
+
+        // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
+        builder.setCancelable(true);
+
+        // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
+        builder.setPositiveButton("Play again", (DialogInterface.OnClickListener) (dialog, which) -> {
+            // When the user click yes button then app will close
+        });
+        builder.setNegativeButton("Leave room", (DialogInterface.OnClickListener) (dialog, which) -> {
+
+        });
+
+        // Create the Alert dialog
+        AlertDialog alertDialog = builder.create();
+        // Show the Alert Dialog box
+        alertDialog.show();
+
     }
 
     // reset the game
