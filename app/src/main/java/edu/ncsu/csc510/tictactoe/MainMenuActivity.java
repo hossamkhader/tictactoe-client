@@ -211,21 +211,24 @@ public class MainMenuActivity extends AppCompatActivity {
     void messageHandler(String message) {
         // print message to log for testing purposes
         Log.d("mainMSG", message);
-        String action, description;
-        action = description = "";
-        User user = WebSocketClientSingleton.getUser();
+        String action, description, username, player_id;
+        action = description = username = player_id ="";
+        User user = new User();
         try {
             JSONObject obj = (JSONObject) new JSONParser().parse(message);
             action = obj.get("action").toString();
             description = obj.get("description").toString();
-            user.setUsername(obj.get("username").toString());
-            user.setPlayer_id(obj.get("player_id").toString());
+            username = obj.get("username").toString();
+            player_id = obj.get("player_id").toString();
         } catch (ParseException e) {
             Log.d("messageHandler: ", "ParseException: ", e);
         }
 
         if(description.equals("success"))
         {
+            user.setUsername(username);
+            user.setPlayer_id(player_id);
+            WebSocketClientSingleton.setUser(user);
             Intent switchActivityIntent = new Intent(this, JoinActivity.class);
             switchActivityIntent.putExtra("picture", imageInByte);
             startActivity(switchActivityIntent);

@@ -1,13 +1,17 @@
 package edu.ncsu.csc510.tictactoe;
 
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -32,11 +36,6 @@ import org.json.simple.parser.JSONParser;
 // Player representation
 // 0 - X
 // 1 - O
-// State meanings:
-//    0 - X
-//    1 - O
-//    2 - Null
-// put all win positions in a 2D array
 //int[][] winPositions = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8},
 //            {0, 3, 6}, {1, 4, 7}, {2, 5, 8},
 //           {0, 4, 8}, {2, 4, 6}};
@@ -48,16 +47,13 @@ public class TicTacToeActivity extends AppCompatActivity {
     public static final int PLAYING = 2;
     public static final int END = 3;
 
+    private static final String XPLAYER = "0";
+    private static final String OPLAYER = "1";
+
     private WebSocketClientImpl ws;
-    private int testCounter = 0;
     private LinearLayout layout;
     private List<ImageView> imageList;
     private TextView status;
-    private Thread uiThread;
-    private String gameId;
-    private final String game_id = "0000000000";
-
-    private String winner;
 
     void init_ws() {
         try {
@@ -73,12 +69,17 @@ public class TicTacToeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tictactoe);
-        uiThread = Thread.currentThread();
         layout = findViewById(R.id.linearLayout);
         status = findViewById(R.id.status);
+        ImageView imgPlayerXO = findViewById(R.id.playerX);
+        TextView username0 = findViewById(R.id.username0);
+        ImageView imgPlayerO = findViewById(R.id.playerO);
+        TextView username1 = findViewById(R.id.username1);
 
-        Intent intent = getIntent();
-        gameId = intent.getStringExtra("gameId");
+        //Set players' names
+        GameState gameState = WebSocketClientSingleton.getGameState();
+        username0.setText("Deana");
+        username1.setText("Grace");
 
         imageList = new ArrayList<ImageView>();
         for (int loop = 0; loop < layout.getChildCount(); loop++) {
@@ -113,15 +114,10 @@ public class TicTacToeActivity extends AppCompatActivity {
             if (this.ws == null || !this.ws.isOpen()) {
                 init_ws();
             }
-
-            //gameState.board[boardNum] = gameState.getActivePlayer();
-            //updateGameBoard();
             JSONObject op = gameStateToJson(boardNum);
             JSONArray data = new JSONArray();
             data.add(op);
             this.ws.send(data.toString());
-            //this.ws.send(op.toJSONString());
-            //WebSocketClientSingleton.setGameState(gameState);
         } catch (Exception e) {
             Log.d("playerTap", "Exception", e);
         }
@@ -135,12 +131,6 @@ public class TicTacToeActivity extends AppCompatActivity {
             GameState gameState = JsonUtility.jsonToGameState(message);
             WebSocketClientSingleton.setGameState(gameState);
             updateGameBoard();
-            /*if(!action.equals("game_ready"))
-            {
-                GameState gameState = JsonUtility.jsonToGameState(message);
-                WebSocketClientSingleton.setGameState(gameState);
-                updateGameBoard();
-            }*/
         } catch (Exception e) {
             Log.d("updateClient", "Exception", e);
         }
@@ -152,19 +142,20 @@ public class TicTacToeActivity extends AppCompatActivity {
             @Override
             public void run() {
                 GameState gameState = WebSocketClientSingleton.getGameState();
+                String player1 = gameState.getP0();
+                String player2 = gameState.getP1();
                 for (int i = 0; i < imageList.size(); i++) {
                     ImageView img = imageList.get(i);
-                    //String marked = img.getTag().toString().isEmpty()? null : img.getTag().toString();
                     if (gameState.board[i] != null) {
-                        if (gameState.board[i].equals("0")) {
+                        if (gameState.board[i].equals(XPLAYER)) {
                             img.setImageResource(R.drawable.x);
-                            img.setTag("0");
+                            img.setTag(XPLAYER);
                             img.refreshDrawableState();
                             Log.d("updateGameBoard() gameState.board[" + i + "]: ", gameState.board[i]);
                         }
-                        if (gameState.board[i].equals("1")) {
+                        if (gameState.board[i].equals(OPLAYER)) {
                             img.setImageResource(R.drawable.o);
-                            img.setTag("1");
+                            img.setTag(OPLAYER);
                             img.refreshDrawableState();
                             Log.d("updateGameBoard () gameState.board[" + i + "]: ", gameState.board[i]);
                         }
@@ -172,22 +163,22 @@ public class TicTacToeActivity extends AppCompatActivity {
                 }
                 // Display status
                 if (gameState.getWinner() != null) {
-                    if (gameState.getWinner().equals("0")) {
-                        status.setText("X has won");
+                    if (gameState.getWinner().equals(XPLAYER)) {
+                        status.setText(player1 + " has won");
                         Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                     }
-                    if (gameState.getWinner().equals("1")) {
-                        status.setText("O has won");
+                    if (gameState.getWinner().equals(OPLAYER)) {
+                        status.setText(player2 + " has won");
                         Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                     }
                 } else {
                     if (gameState.getActivePlayer() != null) {
-                        if (gameState.getActivePlayer().equals("0")) {
-                            status.setText("X's Turn - Tap to play");
+                        if (gameState.getActivePlayer().equals(XPLAYER)) {
+                            status.setText(player1 + "'s Turn - Tap to play");
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
-                        if (gameState.getActivePlayer().equals("1")) {
-                            status.setText("O's Turn - Tap to play");
+                        if (gameState.getActivePlayer().equals(OPLAYER)) {
+                            status.setText(player2 + "'s Turn - Tap to play");
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
                     }
@@ -214,7 +205,36 @@ public class TicTacToeActivity extends AppCompatActivity {
         return op;
     }
 
-    //Convert Json string to GameState
+    //
+    public void showDialog(View view){
+        // Create the object of AlertDialog Builder class
+        AlertDialog.Builder builder = new AlertDialog.Builder(TicTacToeActivity.this);
+
+
+        // Set the message show for the Alert time
+        builder.setMessage("Deana Won!");
+
+        // Set Alert Title
+        builder.setTitle("Message");
+
+
+        // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
+        builder.setCancelable(true);
+
+        // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
+        builder.setPositiveButton("Play again", (DialogInterface.OnClickListener) (dialog, which) -> {
+            // When the user click yes button then app will close
+        });
+        builder.setNegativeButton("Leave room", (DialogInterface.OnClickListener) (dialog, which) -> {
+
+        });
+
+        // Create the Alert dialog
+        AlertDialog alertDialog = builder.create();
+        // Show the Alert Dialog box
+        alertDialog.show();
+
+    }
 
     // reset the game
     @SuppressLint("SetTextI18n")
