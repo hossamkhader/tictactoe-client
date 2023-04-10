@@ -89,6 +89,7 @@
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         tools:ignore="VisualLintTextFieldSize"
+        android:textIsSelectable="true"
         android:autofillHints="" />
 
 

@@ -2,81 +2,97 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mparent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
+    android:paddingLeft="16dp"
+    android:paddingTop="50dp"
+    android:paddingRight="16dp"
     android:visibility="visible"
     tools:context=".TicTacToeActivity">
 
     <!--title text-->
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="@string/csc510_tic_tac_toe"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:fontFamily="sans-serif-light"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/csc510_tic_tac_toe" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/whoIam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <ImageView
+            android:id="@+id/playerX"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/x"
+            app:layout_constraintRight_toLeftOf="@+id/username0"
+            tools:ignore="MissingConstraints" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/username0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="@string/csc510_tic_tac_toe"
+            android:layout_marginLeft="15dp"
+            android:text="Deana"
             android:textColor="@color/white"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            app:fontFamily="sans-serif-light"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/csc510_tic_tac_toe" />
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/whoIam"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toBottomOf="@+id/playerX"
+            app:layout_constraintLeft_toRightOf="@+id/playerX"
+            tools:layout_editor_absoluteY="126dp" />
+
+        <TextView
+            android:id="@+id/timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
-            >
-            <ImageView
-                android:id="@+id/playerX"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:src="@drawable/x"
-                app:layout_constraintRight_toLeftOf="@+id/username0"
-                tools:ignore="MissingConstraints" />
+            android:layout_marginLeft="30dp"
+            android:text="15"
+            android:textColor="@color/yellow"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/username0"
+            app:layout_constraintLeft_toRightOf="@+id/username0"
+            tools:layout_editor_absoluteY="126dp" />
 
-            <TextView
-                android:id="@+id/username0"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:text="Deana"
-                android:textColor="@color/white"
-                android:textSize="25sp"
-                app:layout_constraintLeft_toRightOf="@+id/playerX"
-                app:layout_constraintBottom_toBottomOf="@+id/playerX"
-                tools:layout_editor_absoluteY="126dp" />
-            <ImageView
-                android:id="@+id/playerO"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:src="@drawable/o"
-                android:layout_marginLeft="30dp"
-                app:layout_constraintLeft_toRightOf="@+id/username0"
-                app:layout_constraintRight_toLeftOf="@+id/username1"
-                tools:ignore="MissingConstraints" />
+        <ImageView
+            android:id="@+id/playerO"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="30dp"
+            android:src="@drawable/o"
+            app:layout_constraintLeft_toRightOf="@+id/timer"
+            app:layout_constraintRight_toLeftOf="@+id/username1"
+            tools:ignore="MissingConstraints" />
 
-            <TextView
-                android:id="@+id/username1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:text="David"
-                android:textColor="@color/white"
-                android:textSize="25sp"
-                app:layout_constraintLeft_toRightOf="@+id/playerO"
-                app:layout_constraintBottom_toBottomOf="@+id/playerO"
-                tools:layout_editor_absoluteY="126dp" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
+        <TextView
+            android:id="@+id/username1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="David"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toBottomOf="@+id/playerO"
+            app:layout_constraintLeft_toRightOf="@+id/playerO"
+            tools:layout_editor_absoluteY="126dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <!--image of the grid-->
@@ -219,29 +235,41 @@
     </LinearLayout>
 
     <!--game status text display-->
-    <Button
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Show Dialog"
-        app:layout_constraintBottom_toTopOf="@+id/status"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:onClick="showDialog"
-         />
-
-    <TextView
-        android:id="@+id/status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15sp"
-        android:text="@string/status"
-        android:textColor="#E8F5E9"
-        android:textSize="28sp"
-        android:textStyle="italic"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal"
+        app:layout_constraintCircleRadius="0dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="0.413" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <ImageView
+            android:id="@+id/statusPlayer"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/x"
+            app:layout_constraintRight_toLeftOf="@+id/status"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/status"
+            android:textColor="#E8F5E9"
+            android:textSize="28sp"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="@+id/statusPlayer"
+            app:layout_constraintLeft_toRightOf="@+id/statusPlayer"
+            app:layout_constraintStart_toEndOf="@+id/statusPlayer"
+            app:layout_constraintTop_toTopOf="@+id/statusPlayer"
+            tools:ignore="MissingConstraints" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

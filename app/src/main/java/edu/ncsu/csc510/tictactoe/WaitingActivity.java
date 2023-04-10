@@ -56,14 +56,14 @@ public class WaitingActivity extends AppCompatActivity {
         Log.d("waitingMSG", message);
         try {
             JSONObject obj = (JSONObject) new JSONParser().parse(message);
+            GameState gameState = JsonUtility.jsonToGameState(message);
+            WebSocketClientSingleton.setGameState(gameState);
             Intent switchActivityIntent = null;
-            if (obj.containsKey("p1")) {
-                if (obj.get("p1") != null) {
-                    switchActivityIntent = new Intent(this, TicTacToeActivity.class);
-                    startActivity(switchActivityIntent);
-                    this.ws.removeMessageHandler();
-                    return;
-                }
+            if (gameState.getP1() != null) {
+                switchActivityIntent = new Intent(this, TicTacToeActivity.class);
+                startActivity(switchActivityIntent);
+                this.ws.removeMessageHandler();
+                return;
             }
         }catch (ParseException e) {
             Log.d("messageHandler: ", "ParseException: ", e);

@@ -15,6 +15,7 @@
         android:textSize="25sp"
         android:textStyle="bold"
         android:layout_marginTop="180dp"
+        android:textIsSelectable="true"
         />
 
     <TextView
