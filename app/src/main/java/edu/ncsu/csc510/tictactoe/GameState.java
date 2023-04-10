@@ -5,6 +5,7 @@ import java.util.Date;
 public class GameState {
     private String game_id = null;
     private String activePlayer = "0";
+    private int player_count = 0;
     private String winner = null;
     private String p0 = null;
     private String p1 = null;
@@ -31,6 +32,8 @@ public class GameState {
     {
         this.activePlayer = activePlayer;
     }
+    public int getPlayer_count() {return player_count;}
+    public void setPlayer_count(int player_count){this.player_count = player_count;}
     public String getWinner()
     {
         return  winner;
@@ -59,7 +62,7 @@ public class GameState {
     {
         return  p0_name;
     }
-    public void setP0_nmae(String p0_name)
+    public void setP0_name(String p0_name)
     {
         this.p0_name = p0_name;
     }
@@ -67,7 +70,7 @@ public class GameState {
     {
         return  p1_name;
     }
-    public void setP1_nmae(String p1_name)
+    public void setP1_name(String p1_name)
     {
         this.p1_name = p1_name;
     }
