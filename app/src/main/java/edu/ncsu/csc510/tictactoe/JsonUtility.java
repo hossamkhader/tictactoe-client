@@ -15,6 +15,9 @@ public class JsonUtility {
             gameState = WebSocketClientSingleton.getGameState();
             JSONObject obj = (JSONObject) new JSONParser().parse(message);
             if (obj == null) return gameState;
+            if (obj.containsKey("description") && "Illegal move".equals(obj.get("description"))) {
+                return gameState;
+            }
 
             if (obj.containsKey("game_id")) {
                 gameState.setGame_id(obj.get("game_id") != null ? obj.get("game_id").toString() : null);
