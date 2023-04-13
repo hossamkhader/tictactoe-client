@@ -230,24 +230,17 @@ public class TicTacToeActivity extends AppCompatActivity {
         };
         cTimer.start();
     }
-
-
     //cancel timer
     public void cancelTimer() {
         if(cTimer!=null)
         {
             timer.setText("");
             cTimer.cancel();
-
-
         }
-
     }
-
     //Convert object to Json string
     public JSONObject gameStateToJson(int piece) {
         GameState gameState = WebSocketClientSingleton.getGameState();
-
         JSONObject op = new JSONObject();
         try {
             op.put("action", "game_move");
@@ -259,26 +252,18 @@ public class TicTacToeActivity extends AppCompatActivity {
         }
         return op;
     }
-
     //
     public void showDialog(String message){
         // Create the object of AlertDialog Builder class
         AlertDialog.Builder builder = new AlertDialog.Builder(TicTacToeActivity.this);
-
-
         // Set the message show for the Alert time
         builder.setMessage(message);
-
         // Set Alert Title
         builder.setTitle("Message");
-
-
         // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
         builder.setCancelable(true);
-
         // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
         builder.setPositiveButton("REMATCH", new DialogInterface.OnClickListener (){
-
             @Override
             public void onClick(DialogInterface dialog, int i) {
                 dialog.dismiss();
@@ -288,44 +273,20 @@ public class TicTacToeActivity extends AppCompatActivity {
                 JSONArray jsonData = new JSONArray();
                 jsonData.add(op);
                 TicTacToeActivity.this.ws.send(jsonData.toString());
-
             }
-
-
         });
         builder.setNegativeButton("EXIT", new DialogInterface.OnClickListener (){
             @Override
             public void onClick(DialogInterface dialog, int which){
                 dialog.dismiss();
-
-                Intent intent = new Intent(TicTacToeActivity.this, MainMenuActivity.class);
+                Intent intent = new Intent(TicTacToeActivity.this, JoinActivity.class);
                 startActivity(intent);
                 TicTacToeActivity.this.ws.removeMessageHandler();
             }
-
         });
-
         // Create the Alert dialog
         AlertDialog alertDialog = builder.create();
         // Show the Alert Dialog box
         alertDialog.show();
-
-    }
-
-    // reset the game
-    @SuppressLint("SetTextI18n")
-    public void gameReset() {
-        // remove all the images from the boxes inside the grid
-
-        ((ImageView) findViewById(R.id.imageView0)).setImageResource(0);
-        ((ImageView) findViewById(R.id.imageView1)).setImageResource(0);
-        ((ImageView) findViewById(R.id.imageView2)).setImageResource(0);
-        ((ImageView) findViewById(R.id.imageView3)).setImageResource(0);
-        ((ImageView) findViewById(R.id.imageView4)).setImageResource(0);
-        ((ImageView) findViewById(R.id.imageView5)).setImageResource(0);
-        ((ImageView) findViewById(R.id.imageView6)).setImageResource(0);
-        ((ImageView) findViewById(R.id.imageView7)).setImageResource(0);
-        ((ImageView) findViewById(R.id.imageView8)).setImageResource(0);
-
     }
 }
