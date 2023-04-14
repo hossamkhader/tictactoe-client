@@ -8,6 +8,8 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -19,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.text.DecimalFormat;
@@ -62,6 +65,8 @@ public class TicTacToeActivity extends AppCompatActivity {
     private CountDownTimer cTimer = null;
     private TextView timer = null;
     private ImageView statusPlayer = null;
+
+    ImageView image_view_obj = null;
 
     void init_ws() {
         try {
@@ -109,9 +114,12 @@ public class TicTacToeActivity extends AppCompatActivity {
 
     protected void onStop() {
         super.onStop();
-        if (this.ws != null) {
-            this.ws.close();
-        }
+        // We can't close WS here because that causes bug when going back to the create game screen
+        // after playing a game. I think the alternative would be to put websocket close
+        // into the transition between JoinActivity -> MainMenuActivity (which is not something we currently support)
+//        if (this.ws != null) {
+//            this.ws.close();
+//        }
     }
 
     // this function will be called every time a
@@ -278,8 +286,16 @@ public class TicTacToeActivity extends AppCompatActivity {
         builder.setNegativeButton("EXIT", new DialogInterface.OnClickListener (){
             @Override
             public void onClick(DialogInterface dialog, int which){
+                byte[] imageInByte = null;
+                Bitmap bitmap = ((BitmapDrawable) getDrawable(R.drawable.tictactoe)).getBitmap();
+
+                ByteArrayOutputStream game_img_byte_array = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, game_img_byte_array);
+                imageInByte = game_img_byte_array.toByteArray();
+
                 dialog.dismiss();
                 Intent intent = new Intent(TicTacToeActivity.this, JoinActivity.class);
+                intent.putExtra("picture", imageInByte);
                 startActivity(intent);
                 TicTacToeActivity.this.ws.removeMessageHandler();
             }
