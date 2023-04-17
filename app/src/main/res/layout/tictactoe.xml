@@ -31,8 +31,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/players"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="273dp"
+        android:layout_height="87dp"
         android:layout_marginTop="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -48,50 +48,37 @@
 
         <TextView
             android:id="@+id/username0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="212dp"
+            android:layout_height="32dp"
             android:layout_marginLeft="15dp"
             android:text="Deana"
             android:textColor="@color/white"
             android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="@+id/playerX"
-            app:layout_constraintLeft_toRightOf="@+id/playerX"
-            tools:layout_editor_absoluteY="126dp" />
-
-        <TextView
-            android:id="@+id/timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:text="15"
-            android:textColor="@color/yellow"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/username0"
-            app:layout_constraintLeft_toRightOf="@+id/username0"
-            tools:layout_editor_absoluteY="126dp" />
+            app:layout_constraintLeft_toRightOf="@+id/playerX" />
 
         <ImageView
             android:id="@+id/playerO"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:src="@drawable/o"
-            app:layout_constraintLeft_toRightOf="@+id/timer"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/username1"
+            app:layout_constraintTop_toBottomOf="@+id/playerX"
             tools:ignore="MissingConstraints" />
 
         <TextView
             android:id="@+id/username1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="214dp"
+            android:layout_height="35dp"
             android:layout_marginLeft="15dp"
             android:text="David"
             android:textColor="@color/white"
             android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="@+id/playerO"
-            app:layout_constraintLeft_toRightOf="@+id/playerO"
-            tools:layout_editor_absoluteY="126dp" />
+            app:layout_constraintLeft_toRightOf="@+id/playerO" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -238,7 +225,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="80dp"
         android:orientation="horizontal"
         app:layout_constraintCircleRadius="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -270,6 +257,21 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="180dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="180dp"
+        android:text="15"
+        android:textColor="@color/yellow"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

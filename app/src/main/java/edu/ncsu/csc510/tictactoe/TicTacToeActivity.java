@@ -68,6 +68,8 @@ public class TicTacToeActivity extends AppCompatActivity {
 
     ImageView image_view_obj = null;
 
+    String lastPlayer = null;
+
     void init_ws() {
         try {
             this.ws = WebSocketClientSingleton.getInstance();
@@ -126,12 +128,12 @@ public class TicTacToeActivity extends AppCompatActivity {
     // players tap in an empty box of the grid
     @SuppressLint("SetTextI18n")
     public void playerTap(View view) {
-        //cancelTimer();
+
         GameState gameState = WebSocketClientSingleton.getGameState();
         ImageView img = (ImageView) view;
         String tappedImageId = img.getResources().getResourceEntryName(img.getId());
         int boardNum = Integer.parseInt(tappedImageId.substring(tappedImageId.length() - 1));
-
+        boolean validMove = true;
         try {
             if (this.ws == null || !this.ws.isOpen()) {
                 init_ws();
@@ -140,8 +142,13 @@ public class TicTacToeActivity extends AppCompatActivity {
             JSONArray data = new JSONArray();
             data.add(op);
             this.ws.send(data.toString());
+            //cancelTimer();
         } catch (Exception e) {
             Log.d("playerTap", "Exception", e);
+            //validMove = false;
+        }
+        if (validMove) {
+           // cancelTimer();
         }
     }
 
@@ -149,9 +156,13 @@ public class TicTacToeActivity extends AppCompatActivity {
     void updateClient(String message) {
         Log.d("Message from server In updateClient: ", message);
         try {
+            lastPlayer = WebSocketClientSingleton.getGameState().getActivePlayer();
             JSONObject obj = (JSONObject) new JSONParser().parse(message);
             GameState gameState = JsonUtility.jsonToGameState(message);
             WebSocketClientSingleton.setGameState(gameState);
+            if (lastPlayer != WebSocketClientSingleton.getGameState().getActivePlayer()) {
+                cancelTimer();
+            }
             updateGameBoard();
         } catch (Exception e) {
             Log.d("updateClient", "Exception", e);
@@ -202,15 +213,20 @@ public class TicTacToeActivity extends AppCompatActivity {
                 } else {
                     if (gameState.getActivePlayer() != null) {
                         if (gameState.getActivePlayer().equals(XPLAYER)) {
+
                             statusPlayer.setImageResource(R.drawable.x);
                             status.setText("'s Turn - Tap to play");
-                            //startTimer();
+                            if (!lastPlayer.equals(XPLAYER)) {
+                                startTimer();
+                            }
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
                         if (gameState.getActivePlayer().equals(OPLAYER)) {
                             statusPlayer.setImageResource(R.drawable.o);
                             status.setText("'s Turn - Tap to play");
-                            //startTimer();
+                            if (!lastPlayer.equals(OPLAYER)) {
+                                startTimer();
+                            }
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
 
