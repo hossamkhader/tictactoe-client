@@ -155,9 +155,20 @@ public class TicTacToeActivity extends AppCompatActivity {
     // Update the game board and status by the opponent's move that was sent from server.
     void updateClient(String message) {
         Log.d("Message from server In updateClient: ", message);
+
         try {
             lastPlayer = WebSocketClientSingleton.getGameState().getActivePlayer();
             JSONObject obj = (JSONObject) new JSONParser().parse(message);
+
+            if(obj.containsKey("action") && obj.get("action").equals("exit_game")) {
+                if(obj.get("description").equals("success")) {
+                    status.setText("Opponent left game.");
+                    Thread.sleep(5000);
+                    returnToJoinActivity();
+//                    rematchErrorDialog("Opponent has left game.");
+                }
+            }
+
             GameState gameState = JsonUtility.jsonToGameState(message);
             WebSocketClientSingleton.setGameState(gameState);
             if (lastPlayer != WebSocketClientSingleton.getGameState().getActivePlayer()) {
@@ -229,6 +240,9 @@ public class TicTacToeActivity extends AppCompatActivity {
                             }
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
+                        if (gameState.getPlayer_count() != 2) {
+                            status.setText("Waiting for other player.");
+                        }
 
                     }
                 }
@@ -276,6 +290,21 @@ public class TicTacToeActivity extends AppCompatActivity {
         }
         return op;
     }
+
+    public void returnToJoinActivity() {
+        byte[] imageInByte = null;
+        Bitmap bitmap = ((BitmapDrawable) getDrawable(R.drawable.tictactoe)).getBitmap();
+
+        ByteArrayOutputStream game_img_byte_array = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, game_img_byte_array);
+        imageInByte = game_img_byte_array.toByteArray();
+
+
+        Intent intent = new Intent(TicTacToeActivity.this, JoinActivity.class);
+        intent.putExtra("picture", imageInByte);
+        startActivity(intent);
+        TicTacToeActivity.this.ws.removeMessageHandler();
+    }
     //
     public void showDialog(String message){
         // Create the object of AlertDialog Builder class
@@ -302,20 +331,44 @@ public class TicTacToeActivity extends AppCompatActivity {
         builder.setNegativeButton("EXIT", new DialogInterface.OnClickListener (){
             @Override
             public void onClick(DialogInterface dialog, int which){
-                byte[] imageInByte = null;
-                Bitmap bitmap = ((BitmapDrawable) getDrawable(R.drawable.tictactoe)).getBitmap();
-
-                ByteArrayOutputStream game_img_byte_array = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, game_img_byte_array);
-                imageInByte = game_img_byte_array.toByteArray();
-
                 dialog.dismiss();
-                Intent intent = new Intent(TicTacToeActivity.this, JoinActivity.class);
-                intent.putExtra("picture", imageInByte);
-                startActivity(intent);
-                TicTacToeActivity.this.ws.removeMessageHandler();
+                JSONObject msg = new JSONObject();
+                msg.put("action", "exit_game");
+                msg.put("game_id", WebSocketClientSingleton.getGameState().getGame_id());
+                JSONArray jsonData = new JSONArray();
+                jsonData.add(msg);
+                TicTacToeActivity.this.ws.send(jsonData.toString());
+                returnToJoinActivity();
+
             }
         });
+        // Create the Alert dialog
+        AlertDialog alertDialog = builder.create();
+        // Show the Alert Dialog box
+        alertDialog.show();
+    }
+
+    // I'd like to switch this to an error dialog but it does not currently work
+    // due to the thread usage. Will wait to update this until Deana/Maddie have added any thread
+    // implementation for the timer, as this might be reusable for this dialog
+    public void rematchErrorDialog(String message) {
+        // Create the object of AlertDialog Builder class
+        AlertDialog.Builder builder = new AlertDialog.Builder(TicTacToeActivity.this);
+        // Set the message show for the Alert time
+        builder.setMessage(message);
+        // Set Alert Title
+        builder.setTitle("Message");
+        // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
+        builder.setCancelable(false);
+        // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
+        builder.setPositiveButton("Return to Create/Join Game", new DialogInterface.OnClickListener (){
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+                returnToJoinActivity();
+            }
+        });
+
         // Create the Alert dialog
         AlertDialog alertDialog = builder.create();
         // Show the Alert Dialog box
