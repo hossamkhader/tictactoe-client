@@ -317,7 +317,7 @@ public class TicTacToeActivity extends AppCompatActivity {
         // Set Alert Title
         builder.setTitle("Message");
         // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
-        builder.setCancelable(true);
+        builder.setCancelable(false);
         // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
         builder.setPositiveButton("REMATCH", new DialogInterface.OnClickListener (){
             @Override
