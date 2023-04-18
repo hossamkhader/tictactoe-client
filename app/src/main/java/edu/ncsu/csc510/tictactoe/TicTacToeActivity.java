@@ -13,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,12 +62,13 @@ public class TicTacToeActivity extends AppCompatActivity {
     private LinearLayout layout;
     private List<ImageView> imageList;
     private TextView status;
-    //Declare timer
-    private CountDownTimer cTimer = null;
-    private TextView timer = null;
     private ImageView statusPlayer = null;
 
-    ImageView image_view_obj = null;
+    //Declare timer
+    private CountDownTimer cTimer = null;
+    private TextView timerText = null;
+    Handler handler = new Handler();
+    private Runnable runnable;
 
     String lastPlayer = null;
 
@@ -91,7 +93,7 @@ public class TicTacToeActivity extends AppCompatActivity {
         TextView username0 = findViewById(R.id.username0);
         ImageView imgPlayerO = findViewById(R.id.playerO);
         TextView username1 = findViewById(R.id.username1);
-        timer = findViewById(R.id.timer);
+        timerText = findViewById(R.id.timer);
         statusPlayer = findViewById(R.id.statusPlayer);
 
         //Set players' names
@@ -111,7 +113,7 @@ public class TicTacToeActivity extends AppCompatActivity {
         }
 
         init_ws();
-        //startTimer();
+        updateGameBoard();
     }
 
     protected void onStop() {
@@ -142,7 +144,6 @@ public class TicTacToeActivity extends AppCompatActivity {
             JSONArray data = new JSONArray();
             data.add(op);
             this.ws.send(data.toString());
-            //cancelTimer();
         } catch (Exception e) {
             Log.d("playerTap", "Exception", e);
             //validMove = false;
@@ -155,26 +156,14 @@ public class TicTacToeActivity extends AppCompatActivity {
     // Update the game board and status by the opponent's move that was sent from server.
     void updateClient(String message) {
         Log.d("Message from server In updateClient: ", message);
-
         try {
-            lastPlayer = WebSocketClientSingleton.getGameState().getActivePlayer();
             JSONObject obj = (JSONObject) new JSONParser().parse(message);
-
-            if(obj.containsKey("action") && obj.get("action").equals("exit_game")) {
-                if(obj.get("description").equals("success")) {
-                    status.setText("Opponent left game.");
-                    Thread.sleep(5000);
-                    returnToJoinActivity();
-//                    rematchErrorDialog("Opponent has left game.");
-                }
+            if (!(obj.containsKey("description") && "Illegal move".equals(obj.get("description")))) {
+                GameState gameState = JsonUtility.jsonToGameState(message);
+                WebSocketClientSingleton.setGameState(gameState);
+                updateGameBoard();
             }
 
-            GameState gameState = JsonUtility.jsonToGameState(message);
-            WebSocketClientSingleton.setGameState(gameState);
-            if (lastPlayer != WebSocketClientSingleton.getGameState().getActivePlayer()) {
-                cancelTimer();
-            }
-            updateGameBoard();
         } catch (Exception e) {
             Log.d("updateClient", "Exception", e);
         }
@@ -211,37 +200,40 @@ public class TicTacToeActivity extends AppCompatActivity {
                     if (gameState.getWinner().equals(XPLAYER)) {
                         statusPlayer.setImageResource(R.drawable.x);
                         status.setText(" has won");
-                        message = gameState.getP0_name() + " has won!";
+                        message = gameState.getP0_name() + "  has  won!";
                         Log.d("Status is updated in displayGameState() : ", status.getText().toString());
-                    }
-                    if (gameState.getWinner().equals(OPLAYER)) {
+                    }else if (gameState.getWinner().equals(OPLAYER)) {
                         statusPlayer.setImageResource(R.drawable.o);
                         status.setText(" has won");
-                        message = gameState.getP1_name() + " has won!";
+                        message = gameState.getP1_name() + "  has  won!";
+                        Log.d("Status is updated in displayGameState() : ", status.getText().toString());
+                    }else if(gameState.getWinner().equals("draw")){
+                        statusPlayer.setImageResource(0);
+                        status.setText("No winner.");
+                        message = "No winner. Try again!";
                         Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                     }
-                    showDialog(message);
+                    if(gameState.getPlayer_count() == 2)
+                    {
+                        cancelTimer();
+                        showDialog(message);
+                    }
                 } else {
                     if (gameState.getActivePlayer() != null) {
                         if (gameState.getActivePlayer().equals(XPLAYER)) {
-
                             statusPlayer.setImageResource(R.drawable.x);
                             status.setText("'s Turn - Tap to play");
-                            if (!lastPlayer.equals(XPLAYER)) {
-                                startTimer();
-                            }
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
                         if (gameState.getActivePlayer().equals(OPLAYER)) {
                             statusPlayer.setImageResource(R.drawable.o);
                             status.setText("'s Turn - Tap to play");
-                            if (!lastPlayer.equals(OPLAYER)) {
-                                startTimer();
-                            }
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
-                        if (gameState.getPlayer_count() != 2) {
-                            status.setText("Waiting for other player.");
+                        if(gameState.getPlayer_count() == 2)
+                        {
+                            cancelTimer();
+                            startTimer();
                         }
 
                     }
@@ -253,28 +245,39 @@ public class TicTacToeActivity extends AppCompatActivity {
     }
     //start timer function
     public void startTimer() {
-        cTimer = new CountDownTimer(15000, 1000) {
-            public void onTick(long millisUntilFinished) {
+        runnable = null;
+        runnable = new Runnable() {
+            @Override
+            public void run() {
 
-                NumberFormat f = new DecimalFormat("00");
-                long sec = (millisUntilFinished / 1000) % 60;
-                timer.setText(f.format(sec));
-            }
-            public void onFinish() {
-
-                timer.setText("");
-                cancelTimer();
+                cTimer = new CountDownTimer(15000, 1000) {
+                    public void onTick(long millisUntilFinished) {
+                        NumberFormat f = new DecimalFormat("00");
+                        long sec = (millisUntilFinished / 1000) % 60;
+                        timerText.setText(f.format(sec));
+                    }
+                    public void onFinish() {
+                        cancelTimer();
+                    }
+                };
+                cTimer.start();
             }
         };
-        cTimer.start();
+        handler.postDelayed(runnable, 0);
     }
     //cancel timer
     public void cancelTimer() {
-        if(cTimer!=null)
-        {
-            timer.setText("");
+        handler.removeCallbacks(runnable);
+        if(cTimer != null) {
             cTimer.cancel();
+            cTimer = null;
         }
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                timerText.setText("");
+            }
+        });
     }
     //Convert object to Json string
     public JSONObject gameStateToJson(int piece) {
@@ -314,7 +317,7 @@ public class TicTacToeActivity extends AppCompatActivity {
         // Set Alert Title
         builder.setTitle("Message");
         // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
-        builder.setCancelable(true);
+        builder.setCancelable(false);
         // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
         builder.setPositiveButton("REMATCH", new DialogInterface.OnClickListener (){
             @Override

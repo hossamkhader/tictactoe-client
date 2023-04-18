@@ -43,6 +43,7 @@ public class MainMenuActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WebSocketClientSingleton.clearInstance();
         setContentView(R.layout.main_menu);
         bindView();
         setListeners();
