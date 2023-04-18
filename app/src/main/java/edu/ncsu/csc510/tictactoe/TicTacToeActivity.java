@@ -13,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -129,7 +130,7 @@ public class TicTacToeActivity extends AppCompatActivity {
     // players tap in an empty box of the grid
     @SuppressLint("SetTextI18n")
     public void playerTap(View view) {
-        cancelTimer();
+
         GameState gameState = WebSocketClientSingleton.getGameState();
         ImageView img = (ImageView) view;
         String tappedImageId = img.getResources().getResourceEntryName(img.getId());
@@ -157,9 +158,12 @@ public class TicTacToeActivity extends AppCompatActivity {
         Log.d("Message from server In updateClient: ", message);
         try {
             JSONObject obj = (JSONObject) new JSONParser().parse(message);
-            GameState gameState = JsonUtility.jsonToGameState(message);
-            WebSocketClientSingleton.setGameState(gameState);
-            updateGameBoard();
+            if (!(obj.containsKey("description") && "Illegal move".equals(obj.get("description")))) {
+                GameState gameState = JsonUtility.jsonToGameState(message);
+                WebSocketClientSingleton.setGameState(gameState);
+                updateGameBoard();
+            }
+
         } catch (Exception e) {
             Log.d("updateClient", "Exception", e);
         }
@@ -209,8 +213,11 @@ public class TicTacToeActivity extends AppCompatActivity {
                         message = "No winner. Try again!";
                         Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                     }
-                    cancelTimer();
-                    showDialog(message);
+                    if(gameState.getPlayer_count() == 2)
+                    {
+                        cancelTimer();
+                        showDialog(message);
+                    }
                 } else {
                     if (gameState.getActivePlayer() != null) {
                         if (gameState.getActivePlayer().equals(XPLAYER)) {
@@ -223,8 +230,12 @@ public class TicTacToeActivity extends AppCompatActivity {
                             status.setText("'s Turn - Tap to play");
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
-                        cancelTimer();
-                        startTimer();
+                        if(gameState.getPlayer_count() == 2)
+                        {
+                            cancelTimer();
+                            startTimer();
+                        }
+
                     }
                 }
             }
@@ -261,14 +272,12 @@ public class TicTacToeActivity extends AppCompatActivity {
             cTimer.cancel();
             cTimer = null;
         }
-        Handler h = new Handler();
-        Runnable runnable2 = new Runnable() {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 timerText.setText("");
             }
-        };
-        h.post(runnable2);
+        });
     }
     //Convert object to Json string
     public JSONObject gameStateToJson(int piece) {
