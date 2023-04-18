@@ -216,7 +216,9 @@ public class TicTacToeActivity extends AppCompatActivity {
                     if(gameState.getPlayer_count() == 2)
                     {
                         cancelTimer();
-                        showDialog(message);
+                        if(!"spectate".equals(WebSocketClientSingleton.getUser().getMode())) {
+                            showDialog(message);
+                        }
                     }
                 } else {
                     if (gameState.getActivePlayer() != null) {
@@ -230,7 +232,7 @@ public class TicTacToeActivity extends AppCompatActivity {
                             status.setText("'s Turn - Tap to play");
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
-                        if(gameState.getPlayer_count() == 2)
+                        if(gameState.getPlayer_count() == 2 && gameState.getLast_move() != null)
                         {
                             cancelTimer();
                             startTimer();
@@ -254,7 +256,7 @@ public class TicTacToeActivity extends AppCompatActivity {
                     public void onTick(long millisUntilFinished) {
                         NumberFormat f = new DecimalFormat("00");
                         long sec = (millisUntilFinished / 1000) % 60;
-                        timerText.setText(f.format(sec));
+                        timerText.setText(f.format(sec + 1));
                     }
                     public void onFinish() {
                         cancelTimer();
