@@ -232,7 +232,7 @@ public class TicTacToeActivity extends AppCompatActivity {
                             status.setText("'s Turn - Tap to play");
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
-                        if(gameState.getPlayer_count() == 2)
+                        if(gameState.getPlayer_count() == 2 && gameState.getLast_move() != null)
                         {
                             cancelTimer();
                             startTimer();
