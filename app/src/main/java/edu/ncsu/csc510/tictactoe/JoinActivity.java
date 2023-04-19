@@ -200,7 +200,7 @@ public class JoinActivity extends AppCompatActivity {
 
             if (obj.containsKey("description")) {
                 if (obj.get("description").toString().equals("fail")) {
-                    create_fail_dialogue();
+                    runOnUiThread(() -> create_fail_dialogue());
                     return;
                 }
             }
