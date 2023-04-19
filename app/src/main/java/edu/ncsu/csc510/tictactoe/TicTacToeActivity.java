@@ -163,18 +163,22 @@ public class TicTacToeActivity extends AppCompatActivity {
         Log.d("Message from server In updateClient: ", message);
         try {
             JSONObject obj = (JSONObject) new JSONParser().parse(message);
+            // check if message relates to a player leaving the game first
             if(obj.containsKey("action") && "exit_game".equals(obj.get("action"))) {
                 if("success".equals(obj.get("description"))) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            winnerDialog.dismiss();
+                            if(!"spectate".equals(WebSocketClientSingleton.getUser().getMode())) {
+                                winnerDialog.dismiss();
+                            }
                             rematchErrorDialog("Opponent has left game.");
                         }
                     });
                     }
                 }else{
                 if (!(obj.containsKey("description") && "Illegal move".equals(obj.get("description")))) {
+                    // if not illegal move then update game-board
                     GameState gameState = JsonUtility.jsonToGameState(message);
                     WebSocketClientSingleton.setGameState(gameState);
                     updateGameBoard();
