@@ -1,0 +1,66 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerHorizontal="false"
+    android:layout_gravity="center_vertical"
+    android:background="#3C3A3A"
+    android:orientation="vertical"
+    android:padding="16dp"
+    app:layout_anchorGravity="center_horizontal|center_vertical">
+
+    <TextView
+        android:id="@+id/Rules_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+
+        android:text="Tic Tac Toe Rules:"
+        android:textAlignment="center"
+        android:textSize="25sp"
+
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/RulesDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="One player is X, the other is O\nPlayers take turns putting their marks into the empty spaces\nThe first player to get 3 of their marks in a row (up, down, across, diagonally) wins.\nOnce all 9 sqaures are filled, the game is over."
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/PlayersText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+
+        android:text="\nPlayers:"
+        android:textAlignment="center"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/PlayersDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Players can create or join a game to play against another person. Each player will take turns until there is a winner. After the game, you will have the option to rematch or exit."
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/SpectatorText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:text="\nSpectators:"
+        android:textAlignment="center"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/SpectatorDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Spectators can watch a tic-tac-toe game between two players. They will not have the ability to take any moves during the game."
+        android:textSize="20sp" />
+
+</LinearLayout>
