@@ -67,6 +67,9 @@ public class TicTacToeActivity extends AppCompatActivity {
     //Declare timer
     private CountDownTimer cTimer = null;
     private TextView timerText = null;
+
+    private TextView GameidText = null;
+    private TextView spectator_indicator =null;
     Handler handler = new Handler();
     private Runnable runnable;
 
@@ -96,7 +99,8 @@ public class TicTacToeActivity extends AppCompatActivity {
         TextView username1 = findViewById(R.id.username1);
         timerText = findViewById(R.id.timer);
         statusPlayer = findViewById(R.id.statusPlayer);
-
+        spectator_indicator = findViewById(R.id.Spectate_text);
+        GameidText = findViewById(R.id.Gameid);
         //Set players' names
         GameState gameState = WebSocketClientSingleton.getGameState();
         username0.setText(gameState.getP0_name());
@@ -190,6 +194,10 @@ public class TicTacToeActivity extends AppCompatActivity {
             @Override
             public void run() {
                 GameState gameState = WebSocketClientSingleton.getGameState();
+                if("spectate".equals(WebSocketClientSingleton.getUser().getMode()))
+                    spectator_indicator.setText("Spectator");
+                else
+                    GameidText.setText("Game Id - " + WebSocketClientSingleton.getGameState().getGame_id());
                 for (int i = 0; i < imageList.size(); i++) {
                     ImageView img = imageList.get(i);
                     if (gameState.board[i] != null) {
