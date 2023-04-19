@@ -71,6 +71,7 @@ public class TicTacToeActivity extends AppCompatActivity {
     private Runnable runnable;
 
     String lastPlayer = null;
+    AlertDialog winnerDialog = null;
 
     void init_ws() {
         try {
@@ -160,19 +161,23 @@ public class TicTacToeActivity extends AppCompatActivity {
             JSONObject obj = (JSONObject) new JSONParser().parse(message);
             if(obj.containsKey("action") && "exit_game".equals(obj.get("action"))) {
                 if("success".equals(obj.get("description"))) {
-                    handler.post(new Runnable() {
+                    runOnUiThread(new Runnable() {
+                        @Override
                         public void run() {
+                            winnerDialog.dismiss();
                             rematchErrorDialog("Opponent has left game.");
                         }
                     });
                     }
+                }else{
+                if (!(obj.containsKey("description") && "Illegal move".equals(obj.get("description")))) {
+                    GameState gameState = JsonUtility.jsonToGameState(message);
+                    WebSocketClientSingleton.setGameState(gameState);
+                    updateGameBoard();
                 }
-
-            if (!(obj.containsKey("description") && "Illegal move".equals(obj.get("description")))) {
-                GameState gameState = JsonUtility.jsonToGameState(message);
-                WebSocketClientSingleton.setGameState(gameState);
-                updateGameBoard();
             }
+
+
 
         } catch (Exception e) {
             Log.d("updateClient", "Exception", e);
@@ -322,6 +327,7 @@ public class TicTacToeActivity extends AppCompatActivity {
     }
     //
     public void showDialog(String message){
+        winnerDialog = null;
         // Create the object of AlertDialog Builder class
         AlertDialog.Builder builder = new AlertDialog.Builder(TicTacToeActivity.this);
         // Set the message show for the Alert time
@@ -358,9 +364,9 @@ public class TicTacToeActivity extends AppCompatActivity {
             }
         });
         // Create the Alert dialog
-        AlertDialog alertDialog = builder.create();
+        winnerDialog = builder.create();
         // Show the Alert Dialog box
-        alertDialog.show();
+        winnerDialog.show();
     }
 
     // I'd like to switch this to an error dialog but it does not currently work
