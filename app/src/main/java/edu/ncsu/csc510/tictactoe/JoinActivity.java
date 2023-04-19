@@ -199,6 +199,8 @@ public class JoinActivity extends AppCompatActivity {
                 case R.id.radio_spectator_game:
                     user = WebSocketClientSingleton.getUser();
                     user.setMode("spectate");
+                    gameState = JsonUtility.jsonToGameState(message);
+                    WebSocketClientSingleton.setGameState(gameState);
                     switchActivityIntent = new Intent(this, TicTacToeActivity.class);
                     startActivity(switchActivityIntent);
                     this.ws.removeMessageHandler();
