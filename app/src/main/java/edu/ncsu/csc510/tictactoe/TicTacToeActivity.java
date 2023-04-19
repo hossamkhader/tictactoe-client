@@ -9,6 +9,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -76,6 +78,10 @@ public class TicTacToeActivity extends AppCompatActivity {
     String lastPlayer = null;
     AlertDialog winnerDialog = null;
 
+    private TextView username0;
+
+    private TextView username1;
+
     void init_ws() {
         try {
             this.ws = WebSocketClientSingleton.getInstance();
@@ -94,9 +100,9 @@ public class TicTacToeActivity extends AppCompatActivity {
         layout = findViewById(R.id.linearLayout);
         status = findViewById(R.id.status);
         ImageView imgPlayerXO = findViewById(R.id.playerX);
-        TextView username0 = findViewById(R.id.username0);
+        username0 = findViewById(R.id.username0);
         ImageView imgPlayerO = findViewById(R.id.playerO);
-        TextView username1 = findViewById(R.id.username1);
+        username1 = findViewById(R.id.username1);
         timerText = findViewById(R.id.timer);
         statusPlayer = findViewById(R.id.statusPlayer);
         spectator_indicator = findViewById(R.id.Spectate_text);
@@ -105,6 +111,15 @@ public class TicTacToeActivity extends AppCompatActivity {
         GameState gameState = WebSocketClientSingleton.getGameState();
         username0.setText(gameState.getP0_name());
         username1.setText(gameState.getP1_name());
+        username1.setTextColor(Color.GRAY);
+        String userID = WebSocketClientSingleton.getUser().getPlayer_id();
+        String user0 = WebSocketClientSingleton.getGameState().getP0();
+        String user1 = WebSocketClientSingleton.getGameState().getP1();
+        if(userID.equals(user0)) {
+            username0.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+        } else if(userID.equals(user1)) {
+            username1.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+        }
 
         imageList = new ArrayList<ImageView>();
         for (int loop = 0; loop < layout.getChildCount(); loop++) {
@@ -252,11 +267,15 @@ public class TicTacToeActivity extends AppCompatActivity {
                         if (gameState.getActivePlayer().equals(XPLAYER)) {
                             statusPlayer.setImageResource(R.drawable.x);
                             status.setText("'s Turn - Tap to play");
+                            username0.setTextColor(Color.WHITE);
+                            username1.setTextColor(Color.GRAY);
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
                         if (gameState.getActivePlayer().equals(OPLAYER)) {
                             statusPlayer.setImageResource(R.drawable.o);
                             status.setText("'s Turn - Tap to play");
+                            username1.setTextColor(Color.WHITE);
+                            username0.setTextColor(Color.GRAY);
                             Log.d("Status is updated in displayGameState() : ", status.getText().toString());
                         }
                         if(gameState.getPlayer_count() == 2 && gameState.getLast_move() != null)
