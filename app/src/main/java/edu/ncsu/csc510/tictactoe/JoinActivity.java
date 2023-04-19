@@ -3,6 +3,7 @@ package edu.ncsu.csc510.tictactoe;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,10 +13,16 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -32,6 +39,8 @@ public class JoinActivity extends AppCompatActivity {
     RadioGroup radiogroup_obj;
     EditText gameid_textbox_obj;
     Button submit_btn_obj;
+    Button rules_button;
+
     String gameId;
     private WebSocketClientImpl ws;
 
@@ -45,6 +54,7 @@ public class JoinActivity extends AppCompatActivity {
         byte[] byteArray = extras.getByteArray("picture");
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         image_view_obj.setImageBitmap(bmp);
+
         init_ws();
     }
 
@@ -58,6 +68,7 @@ public class JoinActivity extends AppCompatActivity {
         return false;
     }
 
+
     private void bindView() {
         radiogroup_obj = findViewById(R.id.radiogroup);
         gameid_textbox_obj = findViewById(R.id.textbox_game_id);
@@ -65,6 +76,8 @@ public class JoinActivity extends AppCompatActivity {
         image_view_obj = findViewById(R.id.imageview_gamelogo);
         //hide the gameid initially
         gameid_textbox_obj.setVisibility(View.INVISIBLE);
+        rules_button = findViewById(R.id.rules);
+
     }
 
     private void setListener() {
@@ -99,6 +112,28 @@ public class JoinActivity extends AppCompatActivity {
             }
         };
         gameid_textbox_obj.addTextChangedListener(mTextboxWatcher);
+        rules_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popupView = inflater.inflate(R.layout.pop_uprules, null, false);
+                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                boolean focusable = true; // lets taps outside the popup also dismiss it
+                final PopupWindow popupWindow = new PopupWindow(popupView, width, height, false);
+
+                popupWindow.showAtLocation(view, Gravity.FILL, 0, 0);
+                // dismiss the popup window when touched
+                popupView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        popupWindow.dismiss();
+                        return true;
+                    }
+                });
+            }
+        });
     }
 
     void checkFields() {
